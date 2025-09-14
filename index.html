@@ -3,198 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToolVerse - The Universe of Online Tools</title>
+    <title>ToolVerse - Professional Online Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #3b82f6;
             --primary-dark: #2563eb;
             --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --dark: #1e293b;
             --light: #f8fafc;
+            --gray: #64748b;
         }
 
         * {
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body.dark {
-            background-color: #0f172a;
-            color: #e2e8f0;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
         }
 
-        body.dark .bg-white {
-            background-color: #1e293b;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        body.dark .text-gray-800 {
-            color: #e2e8f0;
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
 
-        body.dark .text-gray-600 {
-            color: #cbd5e1;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
 
-        body.dark .text-gray-500 {
-            color: #94a3b8;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
-        body.dark .bg-gray-50 {
-            background-color: #0f172a;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        body.dark .bg-gray-100 {
-            background-color: #1e293b;
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
         }
 
-        body.dark .bg-gray-200 {
-            background-color: #334155;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
-        body.dark .border-gray-200 {
-            border-color: #334155;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        body.dark .hover\:bg-gray-100:hover {
-            background-color: #334155;
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
         }
 
-        .tool-card {
-            transition: all 0.3s ease;
-            transform: translateY(0);
+        .slide-in {
+            animation: slideIn 0.4s ease-out;
         }
 
-        .tool-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        /* Header Styles */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .category-tab {
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
             position: relative;
             overflow: hidden;
         }
 
-        .category-tab::after {
+        .hero::before {
             content: '';
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            width: 0;
-            height: 3px;
-            background-color: var(--primary);
-            transition: width 0.3s ease;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,133.3C960,128,1056,96,1152,90.7C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
         }
 
-        .category-tab.active::after {
+        /* Tool Cards */
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .tool-icon.pdf { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .tool-icon.image { background: linear-gradient(135deg, #10b981, #059669); }
+        .tool-icon.video { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .tool-icon.code { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .tool-icon.security { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .tool-icon.ai { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* Upload Area */
         .upload-area {
             border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
             transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
         }
 
         .upload-area.dragover {
             border-color: var(--primary);
-            background-color: rgba(59, 130, 246, 0.1);
+            background: #dbeafe;
+            transform: scale(1.02);
         }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .search-suggestion {
-            max-height: 0;
+        /* Progress Bar */
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            margin: 16px 0;
         }
 
-        .search-suggestion.active {
-            max-height: 300px;
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
         }
 
-        .star-rating {
-            display: inline-flex;
-            gap: 2px;
-        }
-
-        .star {
-            color: #d1d5db;
+        /* Category Tabs */
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
-        .star.active,
-        .star:hover {
-            color: #fbbf24;
+        .category-tab:hover {
+            background: #f3f4f6;
         }
 
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Notification */
         .notification {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: var(--primary);
+            background: var(--dark);
             color: white;
             padding: 16px 24px;
             border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 2000;
         }
 
         .notification.show {
-            transform: translateY(0);
-            opacity: 1;
+            transform: translateX(0);
         }
 
-        .user-menu {
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px 16px 56px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-icon {
             position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        /* File Info */
+        .file-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
             border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            width: 200px;
-            z-index: 50;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            padding: 16px;
+            margin: 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .user-menu.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+        /* Result Area */
+        .result-area {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
         }
 
-        body.dark .user-menu {
-            background-color: #1e293b;
+        /* Code Editor */
+        .code-editor {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 16px 0;
         }
 
-        .progress-ring {
-            transform: rotate(-90deg);
+        /* Password Strength */
+        .strength-meter {
+            display: flex;
+            gap: 4px;
+            margin: 8px 0;
         }
 
-        .progress-ring-circle {
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: 251.2;
-            transition: stroke-dashoffset 0.5s;
+        .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
         }
 
+        .strength-bar.active.weak { background: #ef4444; }
+        .strength-bar.active.medium { background: #f59e0b; }
+        .strength-bar.active.strong { background: #10b981; }
+
+        /* Stats */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 48px 0 24px;
+            margin-top: 80px;
+        }
+
+        /* Legal Pages */
         .legal-content {
             max-width: 800px;
             margin: 0 auto;
@@ -229,230 +460,161 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2 rounded-lg">
-                    <i class="fas fa-cube text-xl"></i>
-                </div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ToolVerse</h1>
-            </div>
-            
-            <nav class="hidden md:flex space-x-6">
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Home</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Tools</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">About</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Contact</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">API</a>
-            </nav>
-            
-            <div class="flex items-center space-x-4">
-                <button id="dark-mode-toggle" class="text-gray-600 hover:text-blue-600 transition">
-                    <i class="fas fa-moon text-xl"></i>
-                </button>
-                
-                <div class="relative">
-                    <button id="user-menu-btn" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                            <i class="fas fa-user text-blue-600"></i>
-                        </div>
-                        <span class="hidden md:inline">Guest</span>
-                        <i class="fas fa-chevron-down text-xs"></i>
-                    </button>
-                    
-                    <div id="user-menu" class="user-menu">
-                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Sign In</a>
-                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Create Account</a>
-                        <hr class="my-1 border-gray-200">
-                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Settings</a>
-                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Help</a>
+    <header class="header">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cube text-white text-xl"></i>
                     </div>
+                    <h1 class="text-xl font-bold">ToolVerse</h1>
                 </div>
                 
-                <button class="md:hidden text-gray-600">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">Tools</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">About</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">Contact</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-primary">
+                        Sign In
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+    <section class="hero py-20">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">The Universe of Online Tools</h2>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">Discover, use, and share powerful tools for all your digital needs</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 fade-in">
+                Professional Online Tools
+            </h1>
+            <p class="text-xl mb-8 opacity-90 fade-in">
+                Transform your digital workflow with our powerful suite of online tools
+            </p>
             
-            <div class="relative max-w-2xl mx-auto">
-                <div class="relative">
-                    <input type="text" id="search-input" placeholder="Search for tools..." class="w-full py-4 px-6 pr-12 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg">
-                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                        <i class="fas fa-search text-xl"></i>
-                    </button>
-                </div>
-                
-                <div id="search-suggestions" class="search-suggestion absolute w-full bg-white rounded-lg shadow-lg mt-2 overflow-hidden">
-                    <div class="p-2">
-                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
-                            <i class="fas fa-file-pdf text-red-500 mr-3"></i>
-                            <span>PDF to Word Converter</span>
-                        </div>
-                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
-                            <i class="fas fa-image text-green-500 mr-3"></i>
-                            <span>Image Background Remover</span>
-                        </div>
-                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
-                            <i class="fas fa-code text-yellow-500 mr-3"></i>
-                            <span>JavaScript Formatter</span>
-                        </div>
-                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
-                            <i class="fas fa-lock text-red-500 mr-3"></i>
-                            <span>Password Generator</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="search-box fade-in">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for tools..." id="searchInput">
             </div>
             
-            <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span>100+ Tools</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
+                <div class="stat-card fade-in">
+                    <div class="stat-number">100+</div>
+                    <div class="text-gray-600">Professional Tools</div>
                 </div>
-                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
-                    <i class="fas fa-users mr-2"></i>
-                    <span>1M+ Users</span>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">1M+</div>
+                    <div class="text-gray-600">Active Users</div>
                 </div>
-                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
-                    <i class="fas fa-shield-alt mr-2"></i>
-                    <span>Secure & Private</span>
+                <div class="stat-card fade-in">
+                    <div class="stat-number">99.9%</div>
+                    <div class="text-gray-600">Uptime</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Categories Tabs -->
-    <section class="bg-white shadow-sm sticky top-16 z-30">
+    <!-- Categories -->
+    <section class="py-8 bg-gray-50">
         <div class="container mx-auto px-4">
-            <div class="flex overflow-x-auto py-3 space-x-6 hide-scrollbar">
-                <button class="category-tab active whitespace-nowrap pb-2 font-medium text-blue-600" data-category="all">
-                    <i class="fas fa-th-large mr-2"></i>All Tools
+            <div class="flex flex-wrap justify-center gap-3" id="categoryTabs">
+                <button class="category-tab active" data-category="all">
+                    <i class="fas fa-th mr-2"></i>All Tools
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="pdf">
+                <button class="category-tab" data-category="pdf">
                     <i class="fas fa-file-pdf mr-2"></i>PDF Tools
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="image">
+                <button class="category-tab" data-category="image">
                     <i class="fas fa-image mr-2"></i>Image Tools
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="video">
-                    <i class="fas fa-video mr-2"></i>Video & Audio
+                <button class="category-tab" data-category="video">
+                    <i class="fas fa-video mr-2"></i>Video Tools
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="code">
+                <button class="category-tab" data-category="code">
                     <i class="fas fa-code mr-2"></i>Code Tools
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="security">
+                <button class="category-tab" data-category="security">
                     <i class="fas fa-shield-alt mr-2"></i>Security
                 </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="ai">
+                <button class="category-tab" data-category="ai">
                     <i class="fas fa-brain mr-2"></i>AI Tools
-                </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="converter">
-                    <i class="fas fa-exchange-alt mr-2"></i>Converters
-                </button>
-                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="generator">
-                    <i class="fas fa-magic mr-2"></i>Generators
                 </button>
             </div>
         </div>
     </section>
 
     <!-- Tools Grid -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">All Tools</h2>
-            <div class="flex space-x-3">
-                <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                    <i class="fas fa-th-large mr-2"></i>Grid
-                </button>
-                <button class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
-                    <i class="fas fa-list mr-2"></i>List
+    <main class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="toolsGrid">
+                <!-- Tools will be dynamically loaded here -->
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="btn btn-primary" id="loadMoreBtn">
+                    Load More Tools
                 </button>
             </div>
-        </div>
-        
-        <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Tools will be loaded here -->
-        </div>
-        
-        <div class="text-center mt-10">
-            <button id="load-more-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Load More Tools
-            </button>
         </div>
     </main>
 
     <!-- Tool Modal -->
-    <div id="tool-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 flex justify-between items-center">
-                <h3 id="modal-title" class="text-xl font-semibold">Tool Name</h3>
-                <div class="flex items-center space-x-4">
-                    <button id="share-tool" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
-                        <i class="fas fa-share-alt"></i>
-                    </button>
-                    <button id="favorite-tool" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <button id="close-modal" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-2xl font-bold" id="modalTitle">Tool Name</h2>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
-            
-            <div id="modal-content" class="p-6 overflow-y-auto flex-grow">
-                <!-- Tool content will be dynamically loaded here -->
+            <div class="modal-body" id="modalContent">
+                <!-- Tool content will be loaded here -->
             </div>
-            
-            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center space-x-4">
-                        <div class="star-rating" id="tool-rating">
-                            <i class="fas fa-star star" data-rating="1"></i>
-                            <i class="fas fa-star star" data-rating="2"></i>
-                            <i class="fas fa-star star" data-rating="3"></i>
-                            <i class="fas fa-star star" data-rating="4"></i>
-                            <i class="fas fa-star star" data-rating="5"></i>
-                        </div>
-                        <span class="text-sm text-gray-600">(4.5/5 - 128 reviews)</span>
-                    </div>
-                    <button id="report-tool" class="text-red-500 hover:text-red-700 transition">
-                        <i class="fas fa-flag mr-1"></i> Report
-                    </button>
-                </div>
+        </div>
+    </div>
+
+    <!-- Legal Modal -->
+    <div class="modal" id="legalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-2xl font-bold" id="legalTitle">Legal Page</h2>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeLegalModal()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="legalContent">
+                <!-- Legal content will be loaded here -->
             </div>
         </div>
     </div>
 
     <!-- Notification -->
-    <div id="notification" class="notification">
-        <div class="flex items-center">
-            <i class="fas fa-check-circle mr-3"></i>
-            <span id="notification-text">Action completed successfully!</span>
-        </div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Action completed!</span>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12 mt-16">
+    <footer class="footer">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2 rounded-lg">
-                            <i class="fas fa-cube text-xl"></i>
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cube text-white text-xl"></i>
                         </div>
-                        <h2 class="text-2xl font-bold">ToolVerse</h2>
+                        <h2 class="text-2xl font-bold text-white">ToolVerse</h2>
                     </div>
-                    <p class="text-gray-400">The universe of online tools for all your digital needs.</p>
+                    <p class="text-gray-400">Professional online tools for all your digital needs.</p>
                     <div class="flex space-x-4 mt-4">
                         <a href="#" class="text-gray-400 hover:text-white transition">
                             <i class="fab fa-facebook-f text-xl"></i>
@@ -465,9 +627,6 @@
                         </a>
                         <a href="#" class="text-gray-400 hover:text-white transition">
                             <i class="fab fa-linkedin-in text-xl"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition">
-                            <i class="fab fa-github text-xl"></i>
                         </a>
                     </div>
                 </div>
@@ -505,7 +664,7 @@
                     </ul>
                     
                     <div class="mt-6">
-                        <h4 class="text-lg font-semibold mb-2">Subscribe to our newsletter</h4>
+                        <h4 class="text-lg font-semibold mb-2">Newsletter</h4>
                         <div class="flex">
                             <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg text-gray-800 w-full focus:outline-none">
                             <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-lg transition">
@@ -522,1506 +681,977 @@
         </div>
     </footer>
 
-    <!-- Legal Pages Modal -->
-    <div id="legal-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 flex justify-between items-center">
-                <h3 id="legal-title" class="text-xl font-semibold">Legal Page</h3>
-                <button id="close-legal-modal" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="legal-content" class="p-6 overflow-y-auto flex-grow legal-content">
-                <!-- Legal content will be dynamically loaded here -->
-            </div>
-        </div>
-    </div>
-
     <script>
         // Tools data
-        const toolsData = [
+        const tools = [
             // PDF Tools
-            { id: 1, name: 'PDF to Word', category: 'pdf', icon: 'fa-file-word', color: 'blue', description: 'Convert PDF documents to Word files', rating: 4.7 },
-            { id: 2, name: 'Word to PDF', category: 'pdf', icon: 'fa-file-pdf', color: 'blue', description: 'Convert Word documents to PDF files', rating: 4.5 },
-            { id: 3, name: 'PDF to Image', category: 'pdf', icon: 'fa-file-image', color: 'blue', description: 'Convert PDF pages to image files', rating: 4.3 },
-            { id: 4, name: 'PDF Merger', category: 'pdf', icon: 'fa-object-group', color: 'blue', description: 'Merge multiple PDF files into one', rating: 4.6 },
-            { id: 5, name: 'PDF Splitter', category: 'pdf', icon: 'fa-cut', color: 'blue', description: 'Split PDF files into multiple documents', rating: 4.4 },
-            { id: 6, name: 'PDF Compressor', category: 'pdf', icon: 'fa-compress', color: 'blue', description: 'Compress PDF files to reduce size', rating: 4.2 },
-            { id: 7, name: 'PDF Password', category: 'pdf', icon: 'fa-lock', color: 'blue', description: 'Add or remove password protection', rating: 4.5 },
-            { id: 8, name: 'PDF OCR', category: 'pdf', icon: 'fa-eye', color: 'blue', description: 'Extract text from scanned PDFs', rating: 4.1 },
+            { id: 1, name: 'PDF to Word', category: 'pdf', icon: 'fa-file-word', description: 'Convert PDF documents to editable Word files', type: 'pdf-to-word' },
+            { id: 2, name: 'PDF Merger', category: 'pdf', icon: 'fa-object-group', description: 'Merge multiple PDF files into one', type: 'pdf-merger' },
+            { id: 3, name: 'PDF Compressor', category: 'pdf', icon: 'fa-compress', description: 'Compress PDF files to reduce size', type: 'pdf-compressor' },
+            { id: 4, name: 'PDF to Image', category: 'pdf', icon: 'fa-file-image', description: 'Convert PDF pages to images', type: 'pdf-to-image' },
             
             // Image Tools
-            { id: 9, name: 'Image Resizer', category: 'image', icon: 'fa-expand-arrows-alt', color: 'green', description: 'Resize images to desired dimensions', rating: 4.8 },
-            { id: 10, name: 'Background Remover', category: 'image', icon: 'fa-eraser', color: 'green', description: 'Remove background from images', rating: 4.7 },
-            { id: 11, name: 'Image Beautifier', category: 'image', icon: 'fa-magic', color: 'green', description: 'Enhance and beautify your images', rating: 4.5 },
-            { id: 12, name: 'Image Cropper', category: 'image', icon: 'fa-crop', color: 'green', description: 'Crop images to perfect dimensions', rating: 4.6 },
-            { id: 13, name: 'Image Compressor', category: 'image', icon: 'fa-compress', color: 'green', description: 'Compress images without quality loss', rating: 4.4 },
-            { id: 14, name: 'Image Converter', category: 'image', icon: 'fa-exchange-alt', color: 'green', description: 'Convert between image formats', rating: 4.3 },
-            { id: 15, name: 'Watermark Adder', category: 'image', icon: 'fa-tint', color: 'green', description: 'Add watermarks to your images', rating: 4.2 },
-            { id: 16, name: 'Image Collage', category: 'image', icon: 'fa-th', color: 'green', description: 'Create beautiful image collages', rating: 4.5 },
+            { id: 5, name: 'Image Resizer', category: 'image', icon: 'fa-expand', description: 'Resize images with custom dimensions', type: 'image-resizer' },
+            { id: 6, name: 'Background Remover', category: 'image', icon: 'fa-eraser', description: 'Remove background from images', type: 'bg-remover' },
+            { id: 7, name: 'Image Compressor', category: 'image', icon: 'fa-compress', description: 'Compress images without quality loss', type: 'image-compressor' },
+            { id: 8, name: 'OCR Scanner', category: 'image', icon: 'fa-eye', description: 'Extract text from images using AI', type: 'ocr-scanner' },
             
-            // Video & Audio Tools
-            { id: 17, name: 'Video Converter', category: 'video', icon: 'fa-exchange-alt', color: 'purple', description: 'Convert videos to different formats', rating: 4.6 },
-            { id: 18, name: 'Video Trimmer', category: 'video', icon: 'fa-cut', color: 'purple', description: 'Trim videos to desired length', rating: 4.5 },
-            { id: 19, name: 'Video Compressor', category: 'video', icon: 'fa-compress', color: 'purple', description: 'Compress videos to reduce file size', rating: 4.4 },
-            { id: 20, name: 'Video to GIF', category: 'video', icon: 'fa-film', color: 'purple', description: 'Convert videos to animated GIFs', rating: 4.3 },
-            { id: 21, name: 'GIF to Video', category: 'video', icon: 'fa-video', color: 'purple', description: 'Convert GIFs to video files', rating: 4.2 },
-            { id: 22, name: 'Audio Converter', category: 'video', icon: 'fa-music', color: 'purple', description: 'Convert audio files between formats', rating: 4.5 },
-            { id: 23, name: 'Audio Trimmer', category: 'video', icon: 'fa-cut', color: 'purple', description: 'Trim audio files to desired length', rating: 4.4 },
-            { id: 24, name: 'Audio Merger', category: 'video', icon: 'fa-object-group', color: 'purple', description: 'Merge multiple audio files', rating: 4.3 },
+            // Video Tools
+            { id: 9, name: 'Video Converter', category: 'video', icon: 'fa-exchange-alt', description: 'Convert video formats', type: 'video-converter' },
+            { id: 10, name: 'Video Trimmer', category: 'video', icon: 'fa-cut', description: 'Trim videos to desired length', type: 'video-trimmer' },
+            { id: 11, name: 'Video Compressor', category: 'video', icon: 'fa-compress', description: 'Compress videos to reduce size', type: 'video-compressor' },
+            { id: 12, name: 'Video to GIF', category: 'video', icon: 'fa-film', description: 'Convert videos to animated GIFs', type: 'video-to-gif' },
             
             // Code Tools
-            { id: 25, name: 'Code Compiler', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Compile and run code online', rating: 4.7 },
-            { id: 26, name: 'Code Obfuscator', category: 'code', icon: 'fa-lock', color: 'yellow', description: 'Obfuscate your code to protect it', rating: 4.4 },
-            { id: 27, name: 'Code Formatter', category: 'code', icon: 'fa-align-left', color: 'yellow', description: 'Format and beautify your code', rating: 4.6 },
-            { id: 28, name: 'JSON Formatter', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Format and validate JSON data', rating: 4.8 },
-            { id: 29, name: 'XML Formatter', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Format and validate XML data', rating: 4.5 },
-            { id: 30, name: 'CSS Minifier', category: 'code', icon: 'fa-compress', color: 'yellow', description: 'Minify CSS files', rating: 4.3 },
-            { id: 31, name: 'JS Minifier', category: 'code', icon: 'fa-compress', color: 'yellow', description: 'Minify JavaScript files', rating: 4.4 },
-            { id: 32, name: 'HTML Encoder', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Encode/decode HTML entities', rating: 4.2 },
+            { id: 13, name: 'Code Formatter', category: 'code', icon: 'fa-code', description: 'Format and beautify your code', type: 'code-formatter' },
+            { id: 14, name: 'JSON Formatter', category: 'code', icon: 'fa-file-code', description: 'Format and validate JSON data', type: 'json-formatter' },
+            { id: 15, name: 'Base64 Encoder', category: 'code', icon: 'fa-lock', description: 'Encode/decode Base64 data', type: 'base64-encoder' },
+            { id: 16, name: 'URL Encoder', category: 'code', icon: 'fa-link', description: 'Encode/decode URLs', type: 'url-encoder' },
             
             // Security Tools
-            { id: 33, name: 'Text Encryption', category: 'security', icon: 'fa-lock', color: 'red', description: 'Encrypt your text securely', rating: 4.6 },
-            { id: 34, name: 'Text Decryption', category: 'security', icon: 'fa-unlock', color: 'red', description: 'Decrypt encrypted text', rating: 4.5 },
-            { id: 35, name: 'Password Generator', category: 'security', icon: 'fa-key', color: 'red', description: 'Generate strong passwords', rating: 4.8 },
-            { id: 36, name: 'Hash Generator', category: 'security', icon: 'fa-hashtag', color: 'red', description: 'Generate MD5, SHA1, SHA256 hashes', rating: 4.4 },
-            { id: 37, name: 'Base64 Encoder', category: 'security', icon: 'fa-code', color: 'red', description: 'Encode/decode Base64 data', rating: 4.3 },
-            { id: 38, name: 'URL Encoder', category: 'security', icon: 'fa-link', color: 'red', description: 'Encode/decode URLs', rating: 4.2 },
-            { id: 39, name: 'QR Generator', category: 'security', icon: 'fa-qrcode', color: 'red', description: 'Generate QR codes', rating: 4.5 },
-            { id: 40, name: 'Password Strength', category: 'security', icon: 'fa-shield-alt', color: 'red', description: 'Check password strength', rating: 4.6 },
+            { id: 17, name: 'Password Generator', category: 'security', icon: 'fa-key', description: 'Generate secure passwords', type: 'password-generator' },
+            { id: 18, name: 'Hash Generator', category: 'security', icon: 'fa-hashtag', description: 'Generate file hashes', type: 'hash-generator' },
+            { id: 19, name: 'Text Encryption', category: 'security', icon: 'fa-lock', description: 'Encrypt your text securely', type: 'text-encryption' },
+            { id: 20, name: 'QR Generator', category: 'security', icon: 'fa-qrcode', description: 'Generate QR codes', type: 'qr-generator' },
             
             // AI Tools
-            { id: 41, name: 'Text Generator', category: 'ai', icon: 'fa-pen-fancy', color: 'indigo', description: 'Generate text using AI', rating: 4.7 },
-            { id: 42, name: 'Image Generator', category: 'ai', icon: 'fa-image', color: 'indigo', description: 'Generate images from text', rating: 4.6 },
-            { id: 43, name: 'Image to Text', category: 'ai', icon: 'fa-eye', color: 'indigo', description: 'Extract text from images (OCR)', rating: 4.5 },
-            { id: 44, name: 'Text Summarizer', category: 'ai', icon: 'fa-file-alt', color: 'indigo', description: 'Summarize long texts', rating: 4.4 },
-            { id: 45, name: 'Grammar Checker', category: 'ai', icon: 'fa-spell-check', color: 'indigo', description: 'Check grammar and spelling', rating: 4.3 },
-            { id: 46, name: 'Translator', category: 'ai', icon: 'fa-language', color: 'indigo', description: 'Translate text between languages', rating: 4.6 },
-            { id: 47, name: 'Code Generator', category: 'ai', icon: 'fa-code', color: 'indigo', description: 'Generate code from descriptions', rating: 4.2 },
-            { id: 48, name: 'AI Chat', category: 'ai', icon: 'fa-comments', color: 'indigo', description: 'Chat with AI assistant', rating: 4.5 },
-            
-            // Converters
-            { id: 49, name: 'Unit Converter', category: 'converter', icon: 'fa-balance-scale', color: 'teal', description: 'Convert between different units', rating: 4.5 },
-            { id: 50, name: 'Currency Converter', category: 'converter', icon: 'fa-dollar-sign', color: 'teal', description: 'Convert between currencies', rating: 4.4 },
-            { id: 51, name: 'Time Zone Converter', category: 'converter', icon: 'fa-clock', color: 'teal', description: 'Convert between time zones', rating: 4.3 },
-            { id: 52, name: 'Number Base Converter', category: 'converter', icon: 'fa-calculator', color: 'teal', description: 'Convert between number bases', rating: 4.2 },
-            
-            // Generators
-            { id: 53, name: 'Lorem Ipsum', category: 'generator', icon: 'fa-font', color: 'pink', description: 'Generate placeholder text', rating: 4.3 },
-            { id: 54, name: 'Color Palette', category: 'generator', icon: 'fa-palette', color: 'pink', description: 'Generate color palettes', rating: 4.5 },
-            { id: 55, name: 'UUID Generator', category: 'generator', icon: 'fa-fingerprint', color: 'pink', description: 'Generate unique identifiers', rating: 4.2 },
-            { id: 56, name: 'Barcode Generator', category: 'generator', icon: 'fa-barcode', color: 'pink', description: 'Generate barcodes', rating: 4.1 },
+            { id: 21, name: 'Text Generator', category: 'ai', icon: 'fa-pen-fancy', description: 'Generate text using AI', type: 'text-generator' },
+            { id: 22, name: 'Image Generator', category: 'ai', icon: 'fa-image', description: 'Generate images from text', type: 'image-generator' },
+            { id: 23, name: 'Grammar Checker', category: 'ai', icon: 'fa-spell-check', description: 'Check grammar and spelling', type: 'grammar-checker' },
+            { id: 24, name: 'Text Summarizer', category: 'ai', icon: 'fa-file-alt', description: 'Summarize long texts', type: 'text-summarizer' }
         ];
 
-        // Tool content templates
-        const toolContents = {
-            'pdf-to-word': {
-                title: 'PDF to Word Converter',
-                content: `
-                    <div class="space-y-6">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <p class="text-blue-800">Convert your PDF documents to editable Word files. Simply upload your PDF file and we'll convert it for you.</p>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
-                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                                    <p class="text-gray-600 mb-2">Drag & drop your PDF file here</p>
-                                    <p class="text-sm text-gray-500">or click to browse</p>
-                                    <p class="text-sm text-gray-500 mt-2">Maximum file size: 50MB</p>
-                                    <input type="file" id="file-input" class="hidden" accept=".pdf">
-                                </div>
-                                
-                                <div id="file-info" class="hidden bg-blue-50 p-4 rounded-lg mt-4">
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <p class="font-medium" id="file-name">filename.pdf</p>
-                                            <p class="text-sm text-gray-500" id="file-size">0 MB</p>
-                                        </div>
-                                        <button id="remove-file" class="text-red-500 hover:text-red-700">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="bg-white border border-gray-200 rounded-lg p-4">
-                                    <h4 class="font-medium mb-3">Conversion Options</h4>
-                                    
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Output Format</label>
-                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                <option>.docx (Recommended)</option>
-                                                <option>.doc</option>
-                                                <option>.rtf</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">OCR Language</label>
-                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                <option>Auto Detect</option>
-                                                <option>English</option>
-                                                <option>Spanish</option>
-                                                <option>French</option>
-                                                <option>German</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500" checked>
-                                                <span class="ml-2 text-sm text-gray-700">Preserve formatting</span>
-                                            </label>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500">
-                                                <span class="ml-2 text-sm text-gray-700">Extract images</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <button id="convert-btn" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition disabled:opacity-50" disabled>
-                                        Convert PDF to Word
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="progress-container" class="hidden">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-sm font-medium text-blue-800">Converting your file...</span>
-                                    <span class="text-sm font-medium text-blue-800" id="progress-percent">0%</span>
-                                </div>
-                                <div class="w-full bg-blue-200 rounded-full h-2.5">
-                                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="font-medium text-green-800">Conversion Complete!</p>
-                                    <p class="text-sm text-green-600">Your file is ready to download</p>
-                                </div>
-                                <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
-                                    <i class="fas fa-download mr-2"></i> Download
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            'image-resizer': {
-                title: 'Image Resizer',
-                content: `
-                    <div class="space-y-6">
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <p class="text-green-800">Resize your images to the exact dimensions you need. Maintain aspect ratio or set custom dimensions.</p>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
-                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                                    <p class="text-gray-600 mb-2">Drag & drop your image here</p>
-                                    <p class="text-sm text-gray-500">or click to browse</p>
-                                    <p class="text-sm text-gray-500 mt-2">Supports: JPG, PNG, GIF, WebP (Max: 10MB)</p>
-                                    <input type="file" id="file-input" class="hidden" accept="image/*">
-                                </div>
-                                
-                                <div id="file-info" class="hidden bg-green-50 p-4 rounded-lg mt-4">
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <p class="font-medium" id="file-name">image.jpg</p>
-                                            <p class="text-sm text-gray-500" id="file-size">0 MB</p>
-                                        </div>
-                                        <button id="remove-file" class="text-red-500 hover:text-red-700">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div id="image-preview" class="hidden">
-                                    <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
-                                        <h4 class="font-medium mb-3">Preview</h4>
-                                        <div class="flex justify-center">
-                                            <img id="preview-img" src="" alt="Preview" class="max-h-64 rounded-lg shadow-md">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="bg-white border border-gray-200 rounded-lg p-4">
-                                        <h4 class="font-medium mb-3">Resize Options</h4>
-                                        
-                                        <div class="grid grid-cols-2 gap-4 mb-4">
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Width (px)</label>
-                                                <input type="number" id="width-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" value="800">
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Height (px)</label>
-                                                <input type="number" id="height-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" value="600">
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="space-y-3">
-                                            <div>
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="maintain-ratio" class="rounded text-green-600 focus:ring-green-500" checked>
-                                                    <span class="ml-2 text-sm text-gray-700">Maintain aspect ratio</span>
-                                                </label>
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Output Format</label>
-                                                <select id="format-select" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-                                                    <option value="jpeg">JPEG</option>
-                                                    <option value="png">PNG</option>
-                                                    <option value="webp">WebP</option>
-                                                </select>
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Quality</label>
-                                                <input type="range" min="1" max="100" value="90" class="w-full">
-                                                <div class="flex justify-between text-xs text-gray-500">
-                                                    <span>Low</span>
-                                                    <span>High</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <button id="resize-btn" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition disabled:opacity-50" disabled>
-                                            Resize Image
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="progress-container" class="hidden">
-                            <div class="bg-green-50 p-4 rounded-lg">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-sm font-medium text-green-800">Resizing your image...</span>
-                                    <span class="text-sm font-medium text-green-800" id="progress-percent">0%</span>
-                                </div>
-                                <div class="w-full bg-green-200 rounded-full h-2.5">
-                                    <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="font-medium text-green-800">Resize Complete!</p>
-                                    <p class="text-sm text-green-600">Your image is ready to download</p>
-                                </div>
-                                <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
-                                    <i class="fas fa-download mr-2"></i> Download
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            'password-generator': {
-                title: 'Password Generator',
-                content: `
-                    <div class="space-y-6">
-                        <div class="bg-red-50 p-4 rounded-lg">
-                            <p class="text-red-800">Generate strong and secure passwords. Customize the length and character types to meet your requirements.</p>
-                        </div>
-                        
-                        <div class="bg-white border border-gray-200 rounded-lg p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h4 class="font-medium">Generated Password</h4>
-                                <div class="flex space-x-2">
-                                    <button id="copy-password" class="text-gray-600 hover:text-gray-800 transition p-2">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                    <button id="refresh-password" class="text-gray-600 hover:text-gray-800 transition p-2">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
-                                <input type="text" id="generated-password" class="bg-transparent font-mono text-lg w-full focus:outline-none" readonly>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-medium mb-3">Password Settings</h4>
-                                    
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Password Length</label>
-                                            <div class="flex items-center space-x-3">
-                                                <input type="range" id="length-slider" min="6" max="50" value="16" class="w-full">
-                                                <span id="length-value" class="text-sm font-medium w-8">16</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Character Types</label>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="uppercase" class="rounded text-red-600 focus:ring-red-500" checked>
-                                                    <span class="ml-2 text-sm text-gray-700">Uppercase (A-Z)</span>
-                                                </label>
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="lowercase" class="rounded text-red-600 focus:ring-red-500" checked>
-                                                    <span class="ml-2 text-sm text-gray-700">Lowercase (a-z)</span>
-                                                </label>
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="numbers" class="rounded text-red-600 focus:ring-red-500" checked>
-                                                    <span class="ml-2 text-sm text-gray-700">Numbers (0-9)</span>
-                                                </label>
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="symbols" class="rounded text-red-600 focus:ring-red-500" checked>
-                                                    <span class="ml-2 text-sm text-gray-700">Symbols (!@#$%^&*)</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Exclude Characters</label>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="exclude-ambiguous" class="rounded text-red-600 focus:ring-red-500">
-                                                    <span class="ml-2 text-sm text-gray-700">Ambiguous (i, l, 1, L)</span>
-                                                </label>
-                                                <label class="flex items-center">
-                                                    <input type="checkbox" id="exclude-brackets" class="rounded text-red-600 focus:ring-red-500">
-                                                    <span class="ml-2 text-sm text-gray-700">Brackets ([{()}])</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <h4 class="font-medium mb-3">Password Strength</h4>
-                                    
-                                    <div class="mb-4">
-                                        <div class="flex justify-between mb-1">
-                                            <span class="text-sm text-gray-600">Strength</span>
-                                            <span id="strength-text" class="text-sm font-medium">Strong</span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                            <div id="strength-bar" class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="bg-gray-50 p-4 rounded-lg">
-                                        <h5 class="font-medium text-sm mb-2">Password Analysis</h5>
-                                        <ul class="text-sm text-gray-600 space-y-1">
-                                            <li class="flex items-center">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                <span>Contains uppercase letters</span>
-                                            </li>
-                                            <li class="flex items-center">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                <span>Contains lowercase letters</span>
-                                            </li>
-                                            <li class="flex items-center">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                <span>Contains numbers</span>
-                                            </li>
-                                            <li class="flex items-center">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                <span>Contains symbols</span>
-                                            </li>
-                                            <li class="flex items-center">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                <span>Length is sufficient</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <button id="generate-btn" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition">
-                                        Generate New Password
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="copy-notification" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                            <p class="text-sm">Password copied to clipboard!</p>
-                        </div>
-                    </div>
-                `
-            },
-            'text-generator': {
-                title: 'AI Text Generator',
-                content: `
-                    <div class="space-y-6">
-                        <div class="bg-indigo-50 p-4 rounded-lg">
-                            <p class="text-indigo-800">Generate text content using advanced AI. Simply provide a prompt and let AI create the content for you.</p>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="md:col-span-2">
-                                <div class="bg-white border border-gray-200 rounded-lg p-6">
-                                    <h4 class="font-medium mb-4">Text Prompt</h4>
-                                    <textarea id="text-prompt" rows="6" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter a prompt to generate text..."></textarea>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
-                                            <select id="content-type" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                                <option value="article">Article</option>
-                                                <option value="blog">Blog Post</option>
-                                                <option value="email">Email</option>
-                                                <option value="social">Social Media</option>
-                                                <option value="story">Story</option>
-                                                <option value="poem">Poem</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
-                                            <select id="content-tone" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                                <option value="professional">Professional</option>
-                                                <option value="casual">Casual</option>
-                                                <option value="friendly">Friendly</option>
-                                                <option value="formal">Formal</option>
-                                                <option value="humorous">Humorous</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Length</label>
-                                            <select id="content-length" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                                <option value="short">Short (100 words)</option>
-                                                <option value="medium">Medium (300 words)</option>
-                                                <option value="long">Long (500 words)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mt-6 flex justify-end">
-                                        <button id="generate-text-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition flex items-center">
-                                            <i class="fas fa-magic mr-2"></i> Generate Text
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="bg-white border border-gray-200 rounded-lg p-6">
-                                    <h4 class="font-medium mb-4">AI Settings</h4>
-                                    
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Creativity Level</label>
-                                            <input type="range" min="1" max="10" value="7" class="w-full">
-                                            <div class="flex justify-between text-xs text-gray-500">
-                                                <span>Conservative</span>
-                                                <span>Creative</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">AI Model</label>
-                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                                <option>GPT-4 (Recommended)</option>
-                                                <option>GPT-3.5</option>
-                                                <option>Claude</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked>
-                                                <span class="ml-2 text-sm text-gray-700">Include examples</span>
-                                            </label>
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500">
-                                                <span class="ml-2 text-sm text-gray-700">Add references</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-                                        <h5 class="font-medium text-sm mb-2">Usage Statistics</h5>
-                                        <div class="space-y-2">
-                                            <div class="flex justify-between text-sm">
-                                                <span class="text-gray-600">Requests this month</span>
-                                                <span class="font-medium">24 / 100</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 24%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="generating-container" class="hidden bg-white border border-gray-200 rounded-lg p-8 text-center">
-                            <div class="loader mx-auto mb-4"></div>
-                            <p class="text-gray-600">Generating text, please wait...</p>
-                            <p class="text-sm text-gray-500 mt-2">This may take a few moments</p>
-                        </div>
-                        
-                        <div id="result-container" class="hidden bg-white border border-gray-200 rounded-lg p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h4 class="font-medium">Generated Text</h4>
-                                <div class="flex space-x-2">
-                                    <button id="copy-text" class="text-gray-600 hover:text-gray-800 transition p-2">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                    <button id="regenerate-text" class="text-gray-600 hover:text-gray-800 transition p-2">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                    <button id="save-text" class="text-gray-600 hover:text-gray-800 transition p-2">
-                                        <i class="fas fa-save"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="generated-text" class="bg-gray-50 p-4 rounded-lg text-gray-700 whitespace-pre-line"></div>
-                        </div>
-                        
-                        <div id="copy-notification" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                            <p class="text-sm">Text copied to clipboard!</p>
-                        </div>
-                    </div>
-                `
-            }
-        };
-
-        // Legal content templates
-        const legalContents = {
-            privacy: {
-                title: 'Privacy Policy',
-                content: `
-                    <h2>Privacy Policy</h2>
-                    <p>Last updated: November 15, 2023</p>
-                    
-                    <h3>1. Information We Collect</h3>
-                    <p>We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include:</p>
-                    <ul>
-                        <li>Personal identification information (name, email address)</li>
-                        <li>Files you upload for processing</li>
-                        <li>Usage data and analytics</li>
-                        <li>Device and browser information</li>
-                    </ul>
-                    
-                    <h3>2. How We Use Your Information</h3>
-                    <p>We use the information we collect to:</p>
-                    <ul>
-                        <li>Provide and maintain our services</li>
-                        <li>Process your files and deliver results</li>
-                        <li>Improve our services and develop new features</li>
-                        <li>Communicate with you about your account</li>
-                        <li>Monitor and analyze usage patterns</li>
-                    </ul>
-                    
-                    <h3>3. Data Security</h3>
-                    <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These include:</p>
-                    <ul>
-                        <li>Encryption of sensitive data in transit and at rest</li>
-                        <li>Secure file storage with automatic deletion after 24 hours</li>
-                        <li>Regular security assessments and updates</li>
-                        <li>Restricted access to personal data</li>
-                    </ul>
-                    
-                    <h3>4. Data Retention</h3>
-                    <p>We retain your information only as long as necessary to provide our services. Uploaded files are automatically deleted from our servers within 24 hours of processing. Account data may be retained for longer periods as required for service operation or legal compliance.</p>
-                    
-                    <h3>5. Third-Party Services</h3>
-                    <p>We may use third-party service providers to assist in operating our services. These providers have access to your personal information only to perform specific tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
-                    
-                    <h3>6. Your Rights</h3>
-                    <p>You have the right to:</p>
-                    <ul>
-                        <li>Access your personal information</li>
-                        <li>Correct inaccurate information</li>
-                        <li>Request deletion of your information</li>
-                        <li>Opt-out of marketing communications</li>
-                        <li>Export your data</li>
-                    </ul>
-                    
-                    <h3>7. Changes to This Policy</h3>
-                    <p>We may update this privacy policy from time to time. The updated version will be indicated by a revised "Last updated" date and the updated version will be effective as soon as it is accessible.</p>
-                    
-                    <h3>8. Contact Us</h3>
-                    <p>If you have any questions about this Privacy Policy, please contact us at privacy@toolverse.com</p>
-                `
-            },
-            terms: {
-                title: 'Terms of Service',
-                content: `
-                    <h2>Terms of Service</h2>
-                    <p>Last updated: November 15, 2023</p>
-                    
-                    <h3>1. Acceptance of Terms</h3>
-                    <p>By accessing and using ToolVerse, you accept and agree to be bound by the terms and provision of this agreement.</p>
-                    
-                    <h3>2. Use License</h3>
-                    <p>Permission is granted to temporarily download one copy of the materials (information or software) on ToolVerse for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
-                    <ul>
-                        <li>modify or copy the materials</li>
-                        <li>use the materials for any commercial purpose</li>
-                        <li>attempt to decompile or reverse engineer any software contained on ToolVerse</li>
-                        <li>remove any copyright or other proprietary notations from the materials</li>
-                        <li>transfer the materials to another person or "mirror" the materials on any other server</li>
-                    </ul>
-                    
-                    <h3>3. Disclaimer</h3>
-                    <p>The materials on ToolVerse are provided on an 'as is' basis. ToolVerse makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
-                    
-                    <h3>4. Limitations</h3>
-                    <p>In no event shall ToolVerse or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on ToolVerse, even if ToolVerse or a ToolVerse authorized representative has been notified orally or in writing of the possibility of such damage.</p>
-                    
-                    <h3>5. Accuracy of Materials</h3>
-                    <p>The materials appearing on ToolVerse could include technical, typographical, or photographic errors. ToolVerse does not warrant that any of the materials on its website are accurate, complete, or current. ToolVerse may make changes to the materials contained on its website at any time without notice. However ToolVerse does not make any commitment to update the materials.</p>
-                    
-                    <h3>6. Links</h3>
-                    <p>ToolVerse has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by ToolVerse of the site. Use of any such linked website is at the user's own risk.</p>
-                    
-                    <h3>7. Modifications</h3>
-                    <p>ToolVerse may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.</p>
-                    
-                    <h3>8. Governing Law</h3>
-                    <p>These terms and conditions are governed by and construed in accordance with the laws of [Your Jurisdiction] and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
-                `
-            },
-            cookies: {
-                title: 'Cookie Policy',
-                content: `
-                    <h2>Cookie Policy</h2>
-                    <p>Last updated: November 15, 2023</p>
-                    
-                    <h3>1. What Are Cookies</h3>
-                    <p>Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used by website owners to make their websites work, or work more efficiently, as well as to provide reporting information.</p>
-                    
-                    <h3>2. How We Use Cookies</h3>
-                    <p>We use cookies for several purposes:</p>
-                    <ul>
-                        <li><strong>Essential Cookies:</strong> These cookies are necessary for the website to function and cannot be switched off in our systems.</li>
-                        <li><strong>Performance Cookies:</strong> These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.</li>
-                        <li><strong>Functional Cookies:</strong> These cookies enable the website to provide enhanced functionality and personalization.</li>
-                        <li><strong>Targeting Cookies:</strong> These cookies may be set through our site by our advertising partners to build a profile of your interests.</li>
-                    </ul>
-                    
-                    <h3>3. Types of Cookies We Use</h3>
-                    <p>The table below lists the cookies we use and why:</p>
-                    <table class="w-full border-collapse border border-gray-300 my-4">
-                        <tr>
-                            <th class="border border-gray-300 px-4 py-2">Cookie Name</th>
-                            <th class="border border-gray-300 px-4 py-2">Purpose</th>
-                            <th class="border border-gray-300 px-4 py-2">Duration</th>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 px-4 py-2">session_id</td>
-                            <td class="border border-gray-300 px-4 py-2">Maintains user session</td>
-                            <td class="border border-gray-300 px-4 py-2">Session</td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 px-4 py-2">preferences</td>
-                            <td class="border border-gray-300 px-4 py-2">Remembers user preferences</td>
-                            <td class="border border-gray-300 px-4 py-2">30 days</td>
-                        </tr>
-                        <tr>
-                            <td class="border border-gray-300 px-4 py-2">analytics</td>
-                            <td class="border border-gray-300 px-4 py-2">Tracks site usage</td>
-                            <td class="border border-gray-300 px-4 py-2">2 years</td>
-                        </tr>
-                    </table>
-                    
-                    <h3>4. Managing Cookies</h3>
-                    <p>You can manage your cookie preferences through your browser settings. Most browsers allow you to:</p>
-                    <ul>
-                        <li>View the cookies that have been set</li>
-                        <li>Delete existing cookies</li>
-                        <li>Block cookies from specific websites</li>
-                        <li>Block all cookies</li>
-                        <li>Block third-party cookies</li>
-                        <li>Clear cookies when you close your browser</li>
-                    </ul>
-                    
-                    <h3>5. Third-Party Cookies</h3>
-                    <p>We may use third-party services that set cookies on our site, such as analytics providers (e.g., Google Analytics) and advertising networks. These third parties have their own privacy policies and we encourage you to review them.</p>
-                    
-                    <h3>6. Changes to This Policy</h3>
-                    <p>We may update this cookie policy from time to time to reflect changes in our use of cookies or for operational, legal, or regulatory reasons. The updated version will be indicated by a revised "Last updated" date.</p>
-                    
-                    <h3>7. Contact Us</h3>
-                    <p>If you have any questions about this Cookie Policy, please contact us at cookies@toolverse.com</p>
-                `
-            },
-            gdpr: {
-                title: 'GDPR Compliance',
-                content: `
-                    <h2>GDPR Compliance</h2>
-                    <p>Last updated: November 15, 2023</p>
-                    
-                    <h3>1. Introduction</h3>
-                    <p>ToolVerse is committed to protecting and respecting your privacy. This GDPR Compliance Statement explains how we collect, use, and protect your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
-                    
-                    <h3>2. Data Controller</h3>
-                    <p>ToolVerse is the data controller responsible for your personal data. Our contact details are:</p>
-                    <p>Email: gdpr@toolverse.com<br>
-                    Address: [Your Company Address]</p>
-                    
-                    <h3>3. Lawful Basis for Processing</h3>
-                    <p>We process personal data lawfully under the GDPR based on one or more of the following legal bases:</p>
-                    <ul>
-                        <li><strong>Consent:</strong> You have given clear consent for us to process your personal data for a specific purpose.</li>
-                        <li><strong>Contract:</strong> Processing is necessary for the performance of a contract with you.</li>
-                        <li><strong>Legal obligation:</strong> We have a legal obligation to process your data.</li>
-                        <li><strong>Legitimate interests:</strong> Processing is necessary for our legitimate interests, provided your fundamental rights do not override these interests.</li>
-                    </ul>
-                    
-                    <h3>4. Your Rights Under GDPR</h3>
-                    <p>Under the GDPR, you have the following rights:</p>
-                    <ul>
-                        <li><strong>Right to be informed:</strong> You have the right to be informed about how we use your personal data.</li>
-                        <li><strong>Right of access:</strong> You have the right to access the personal data we hold about you.</li>
-                        <li><strong>Right to rectification:</strong> You have the right to have inaccurate personal data corrected.</li>
-                        <li><strong>Right to erasure:</strong> You have the right to have your personal data deleted in certain circumstances.</li>
-                        <li><strong>Right to restrict processing:</strong> You have the right to restrict the processing of your personal data.</li>
-                        <li><strong>Right to data portability:</strong> You have the right to obtain and reuse your personal data.</li>
-                        <li><strong>Right to object:</strong> You have the right to object to the processing of your personal data.</li>
-                        <li><strong>Rights related to automated decision making:</strong> You have rights in relation to automated decision making and profiling.</li>
-                    </ul>
-                    
-                    <h3>5. Data Security</h3>
-                    <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. These include:</p>
-                    <ul>
-                        <li>Encryption of sensitive data</li>
-                        <li>Regular security assessments</li>
-                        <li>Access controls and authentication</li>
-                        <li>Employee training on data protection</li>
-                        <li>Data breach notification procedures</li>
-                    </ul>
-                    
-                    <h3>6. International Data Transfers</h3>
-                    <p>We may transfer your personal data to countries outside the European Economic Area (EEA) only if:</p>
-                    <ul>
-                        <li>The country has been deemed by the European Commission to provide an adequate level of data protection</li>
-                        <li>We have appropriate safeguards in place (such as standard contractual clauses)</li>
-                        <li>The transfer is necessary for the performance of a contract with you</li>
-                    </ul>
-                    
-                    <h3>7. Data Breach Notification</h3>
-                    <p>In the event of a personal data breach, we will notify the relevant supervisory authority within 72 hours of becoming aware of the breach, unless the breach is unlikely to result in a risk to the rights and freedoms of individuals. We will also notify affected individuals without undue delay if the breach is likely to result in a high risk to their rights and freedoms.</p>
-                    
-                    <h3>8. Data Protection Officer</h3>
-                    <p>We have appointed a Data Protection Officer (DPO) to oversee our data protection strategy and implementation. You can contact our DPO at dpo@toolverse.com</p>
-                    
-                    <h3>9. Changes to This Policy</h3>
-                    <p>We may update this GDPR Compliance Statement from time to time to reflect changes in our practices or for operational, legal, or regulatory reasons. The updated version will be indicated by a revised "Last updated" date.</p>
-                    
-                    <h3>10. Contact Us</h3>
-                    <p>If you have any questions about this GDPR Compliance Statement or your rights under GDPR, please contact us at gdpr@toolverse.com</p>
-                `
-            }
-        };
-
-        // DOM elements
-        const toolModal = document.getElementById('tool-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalContent = document.getElementById('modal-content');
-        const closeModal = document.getElementById('close-modal');
-        const categoryTabs = document.querySelectorAll('.category-tab');
-        const toolsGrid = document.getElementById('tools-grid');
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const searchInput = document.getElementById('search-input');
-        const searchSuggestions = document.getElementById('search-suggestions');
-        const userMenuBtn = document.getElementById('user-menu-btn');
-        const userMenu = document.getElementById('user-menu');
-        const notification = document.getElementById('notification');
-        const notificationText = document.getElementById('notification-text');
-        const legalModal = document.getElementById('legal-modal');
-        const legalTitle = document.getElementById('legal-title');
-        const legalContent = document.getElementById('legal-content');
-        const closeLegalModal = document.getElementById('close-legal-modal');
-
-        // State
         let currentCategory = 'all';
-        let displayedTools = 16;
-        let isDarkMode = false;
-        let userLoggedIn = false;
+        let displayedTools = 12;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderTools();
-            
-            // Category tab functionality
-            categoryTabs.forEach(tab => {
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Category tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
-                    categoryTabs.forEach(t => {
-                        t.classList.remove('active', 'text-blue-600');
-                        t.classList.add('text-gray-600');
-                    });
-                    tab.classList.add('active', 'text-blue-600');
-                    tab.classList.remove('text-gray-600');
-                    
-                    currentCategory = tab.getAttribute('data-category');
-                    displayedTools = 16;
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentCategory = tab.dataset.category;
+                    displayedTools = 12;
                     renderTools();
                 });
             });
 
-            // Load more functionality
-            loadMoreBtn.addEventListener('click', () => {
+            // Search
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filterTools(searchTerm);
+            });
+
+            // Load more
+            document.getElementById('loadMoreBtn').addEventListener('click', () => {
                 displayedTools += 8;
                 renderTools();
             });
-
-            // Dark mode toggle
-            darkModeToggle.addEventListener('click', () => {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark');
-                darkModeToggle.innerHTML = isDarkMode ? 
-                    '<i class="fas fa-sun text-xl"></i>' : 
-                    '<i class="fas fa-moon text-xl"></i>';
-            });
-
-            // Search functionality
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                filterTools(searchTerm);
-                
-                if (searchTerm.trim() !== '') {
-                    searchSuggestions.classList.add('active');
-                } else {
-                    searchSuggestions.classList.remove('active');
-                }
-            });
-
-            searchInput.addEventListener('focus', () => {
-                if (searchInput.value.trim() !== '') {
-                    searchSuggestions.classList.add('active');
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
-                    searchSuggestions.classList.remove('active');
-                }
-            });
-
-            // User menu toggle
-            userMenuBtn.addEventListener('click', () => {
-                userMenu.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!userMenuBtn.contains(e.target) && !userMenu.contains(e.target)) {
-                    userMenu.classList.remove('active');
-                }
-            });
-
-            // Close modal
-            closeModal.addEventListener('click', () => {
-                toolModal.classList.add('hidden');
-            });
-
-            // Close modal when clicking outside
-            toolModal.addEventListener('click', (e) => {
-                if (e.target === toolModal) {
-                    toolModal.classList.add('hidden');
-                }
-            });
-
-            // Close legal modal
-            closeLegalModal.addEventListener('click', () => {
-                legalModal.classList.add('hidden');
-            });
-
-            // Close legal modal when clicking outside
-            legalModal.addEventListener('click', (e) => {
-                if (e.target === legalModal) {
-                    legalModal.classList.add('hidden');
-                }
-            });
-        });
+        }
 
         // Render tools
         function renderTools() {
+            const grid = document.getElementById('toolsGrid');
             const filteredTools = currentCategory === 'all' 
-                ? toolsData 
-                : toolsData.filter(tool => tool.category === currentCategory);
+                ? tools 
+                : tools.filter(tool => tool.category === currentCategory);
             
             const toolsToShow = filteredTools.slice(0, displayedTools);
             
-            toolsGrid.innerHTML = toolsToShow.map(tool => `
-                <div class="tool-card bg-white rounded-xl shadow-md overflow-hidden fade-in" data-category="${tool.category}">
-                    <div class="p-5">
-                        <div class="bg-${tool.color}-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                            <i class="fas ${tool.icon} text-${tool.color}-600 text-xl"></i>
+            grid.innerHTML = toolsToShow.map(tool => `
+                <div class="tool-card fade-in" onclick="openTool(${tool.id})">
+                    <div class="p-6">
+                        <div class="tool-icon ${tool.category}">
+                            <i class="fas ${tool.icon}"></i>
                         </div>
-                        <h3 class="font-semibold text-lg mb-2">${tool.name}</h3>
-                        <p class="text-gray-600 text-sm mb-4">${tool.description}</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center">
-                                <div class="star-rating text-sm">
-                                    ${renderStars(tool.rating)}
-                                </div>
-                                <span class="text-xs text-gray-500 ml-1">${tool.rating}</span>
-                            </div>
-                            <button class="tool-btn text-blue-600 hover:text-blue-800 font-medium flex items-center" data-tool="${tool.id}">
-                                Use Tool <i class="fas fa-arrow-right ml-2"></i>
-                            </button>
-                        </div>
+                        <h3 class="text-lg font-semibold mb-2">${tool.name}</h3>
+                        <p class="text-gray-600 text-sm">${tool.description}</p>
+                        <button class="btn btn-primary mt-4">
+                            Use Tool <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
             
-            // Add event listeners to tool buttons
-            document.querySelectorAll('.tool-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const toolId = parseInt(btn.getAttribute('data-tool'));
-                    const tool = toolsData.find(t => t.id === toolId);
-                    openToolModal(tool);
-                });
-            });
-            
-            // Show/hide load more button
+            // Hide load more button if all tools are displayed
             if (toolsToShow.length >= filteredTools.length) {
-                loadMoreBtn.style.display = 'none';
+                document.getElementById('loadMoreBtn').style.display = 'none';
             } else {
-                loadMoreBtn.style.display = 'block';
+                document.getElementById('loadMoreBtn').style.display = 'inline-flex';
             }
         }
 
-        // Filter tools based on search
+        // Filter tools
         function filterTools(searchTerm) {
-            const allTools = toolsGrid.querySelectorAll('.tool-card');
+            const grid = document.getElementById('toolsGrid');
+            const filteredTools = tools.filter(tool => 
+                tool.name.toLowerCase().includes(searchTerm) ||
+                tool.description.toLowerCase().includes(searchTerm)
+            );
             
-            allTools.forEach(toolCard => {
-                const toolName = toolCard.querySelector('h3').textContent.toLowerCase();
-                const toolDescription = toolCard.querySelector('p').textContent.toLowerCase();
-                
-                if (toolName.includes(searchTerm) || toolDescription.includes(searchTerm)) {
-                    toolCard.style.display = 'block';
-                } else {
-                    toolCard.style.display = 'none';
-                }
-            });
+            grid.innerHTML = filteredTools.map(tool => `
+                <div class="tool-card fade-in" onclick="openTool(${tool.id})">
+                    <div class="p-6">
+                        <div class="tool-icon ${tool.category}">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">${tool.name}</h3>
+                        <p class="text-gray-600 text-sm">${tool.description}</p>
+                        <button class="btn btn-primary mt-4">
+                            Use Tool <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Render star rating
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating);
-            const halfStar = rating % 1 >= 0.5;
-            let stars = '';
+        // Open tool
+        function openTool(toolId) {
+            const tool = tools.find(t => t.id === toolId);
+            const modal = document.getElementById('toolModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
             
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star text-yellow-400"></i>';
-            }
-            
-            if (halfStar) {
-                stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
-            }
-            
-            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-            for (let i = 0; i < emptyStars; i++) {
-                stars += '<i class="far fa-star text-yellow-400"></i>';
-            }
-            
-            return stars;
+            modalTitle.textContent = tool.name;
+            modalContent.innerHTML = getToolContent(tool);
+            modal.classList.add('active');
         }
 
-        // Show legal page
-        function showLegalPage(type) {
-            const legalData = legalContents[type];
-            if (legalData) {
-                legalTitle.textContent = legalData.title;
-                legalContent.innerHTML = legalData.content;
-                legalModal.classList.remove('hidden');
-            }
-        }
-
-        // Open tool modal
-        function openToolModal(tool) {
-            const toolName = tool.name.toLowerCase().replace(/\s+/g, '-');
-            let toolContent;
-            
-            if (toolContents[toolName]) {
-                toolContent = toolContents[toolName];
-            } else {
-                toolContent = {
-                    title: tool.name,
-                    content: `
+        // Get tool content
+        function getToolContent(tool) {
+            switch(tool.type) {
+                case 'pdf-to-word':
+                    return `
                         <div class="space-y-6">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <p class="text-blue-800">This is a placeholder for the ${tool.name} tool. In a real implementation, this would contain the actual tool interface.</p>
-                            </div>
-                            
-                            <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
+                            <div class="upload-area" onclick="document.getElementById('pdfFile').click()">
                                 <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                                <p class="text-gray-600 mb-2">Drag & drop your file here</p>
-                                <p class="text-sm text-gray-500">or click to browse</p>
-                                <p class="text-sm text-gray-500 mt-2">Maximum file size: 50MB</p>
-                                <input type="file" id="file-input" class="hidden">
+                                <p class="text-lg font-medium mb-2">Drop PDF file here or click to browse</p>
+                                <p class="text-gray-500">Maximum file size: 50MB</p>
+                                <input type="file" id="pdfFile" accept=".pdf" style="display: none;" onchange="handlePDFUpload(this)">
                             </div>
-                            
-                            <div id="file-info" class="hidden bg-blue-50 p-4 rounded-lg">
-                                <div class="flex justify-between items-center">
+                            <div id="pdfFileInfo" class="hidden">
+                                <div class="file-info">
                                     <div>
-                                        <p class="font-medium" id="file-name">filename.ext</p>
-                                        <p class="text-sm text-gray-500" id="file-size">0 MB</p>
+                                        <p class="font-medium" id="pdfFileName">No file selected</p>
+                                        <p class="text-sm text-gray-500" id="pdfFileSize">0 MB</p>
                                     </div>
-                                    <button id="remove-file" class="text-red-500 hover:text-red-700">
-                                        <i class="fas fa-trash"></i>
+                                    <button class="btn btn-secondary" onclick="document.getElementById('pdfFile').click()">
+                                        <i class="fas fa-exchange-alt mr-2"></i>Change File
                                     </button>
                                 </div>
-                            </div>
-                            
-                            <div class="flex justify-end">
-                                <button id="process-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition disabled:opacity-50" disabled>
-                                    Process
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium mb-2">Output Format</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option>.docx (Recommended)</option>
+                                        <option>.doc</option>
+                                        <option>.rtf</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary w-full mt-4" onclick="convertPDFToWord()">
+                                    <i class="fas fa-file-word mr-2"></i>Convert to Word
                                 </button>
                             </div>
-                            
-                            <div id="progress-container" class="hidden">
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-sm font-medium text-blue-800">Processing...</span>
-                                        <span class="text-sm font-medium text-blue-800" id="progress-percent">0%</span>
-                                    </div>
-                                    <div class="w-full bg-blue-200 rounded-full h-2.5">
-                                        <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-                                    </div>
+                            <div id="pdfProgress" class="hidden">
+                                <div class="progress">
+                                    <div class="progress-bar" id="pdfProgressBar"></div>
                                 </div>
+                                <p class="text-center text-gray-600">Converting... <span id="pdfProgressText">0%</span></p>
                             </div>
-                            
-                            <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
+                            <div id="pdfResult" class="hidden result-area">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <p class="font-medium text-green-800">Process Complete!</p>
-                                        <p class="text-sm text-green-600">Your file is ready to download</p>
+                                        <p class="font-medium text-green-800">Conversion Complete!</p>
+                                        <p class="text-sm text-green-600">Your Word file is ready to download</p>
                                     </div>
-                                    <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
-                                        <i class="fas fa-download mr-2"></i> Download
+                                    <button class="btn btn-primary" onclick="downloadFile('converted.docx')">
+                                        <i class="fas fa-download mr-2"></i>Download
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    `
-                };
+                    `;
+                
+                case 'ocr-scanner':
+                    return `
+                        <div class="space-y-6">
+                            <div class="upload-area" onclick="document.getElementById('ocrFile').click()">
+                                <i class="fas fa-image text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-lg font-medium mb-2">Drop image file here or click to browse</p>
+                                <p class="text-gray-500">Supports: JPG, PNG, GIF (Max: 10MB)</p>
+                                <input type="file" id="ocrFile" accept="image/*" style="display: none;" onchange="handleOCRUpload(this)">
+                            </div>
+                            <div id="ocrFileInfo" class="hidden">
+                                <div class="file-info">
+                                    <div>
+                                        <p class="font-medium" id="ocrFileName">No file selected</p>
+                                        <p class="text-sm text-gray-500" id="ocrFileSize">0 MB</p>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="document.getElementById('ocrFile').click()">
+                                        <i class="fas fa-exchange-alt mr-2"></i>Change File
+                                    </button>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium mb-2">Language</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option>English</option>
+                                        <option>Spanish</option>
+                                        <option>French</option>
+                                        <option>German</option>
+                                        <option>Chinese</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary w-full mt-4" onclick="extractTextFromImage()">
+                                    <i class="fas fa-eye mr-2"></i>Extract Text
+                                </button>
+                            </div>
+                            <div id="ocrProgress" class="hidden">
+                                <div class="progress">
+                                    <div class="progress-bar" id="ocrProgressBar"></div>
+                                </div>
+                                <p class="text-center text-gray-600">Extracting text... <span id="ocrProgressText">0%</span></p>
+                            </div>
+                            <div id="ocrResult" class="hidden">
+                                <h4 class="font-medium mb-3">Extracted Text:</h4>
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg h-40 focus:outline-none focus:ring-2 focus:ring-blue-500" id="extractedText" readonly></textarea>
+                                <div class="mt-4 flex justify-end space-x-3">
+                                    <button class="btn btn-secondary" onclick="copyText('extractedText')">
+                                        <i class="fas fa-copy mr-2"></i>Copy
+                                    </button>
+                                    <button class="btn btn-primary" onclick="downloadText()">
+                                        <i class="fas fa-download mr-2"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                
+                case 'password-generator':
+                    return `
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-center mb-4">
+                                    <input type="text" id="generatedPassword" class="flex-1 p-3 border border-gray-300 rounded-lg font-mono text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" readonly>
+                                    <button class="btn btn-secondary ml-3" onclick="copyPassword()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary w-full" onclick="generatePassword()">
+                                    <i class="fas fa-sync-alt mr-2"></i>Generate New Password
+                                </button>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Password Options</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Password Length: <span id="lengthValue">16</span></label>
+                                        <input type="range" id="passwordLength" min="8" max="32" value="16" class="w-full" oninput="document.getElementById('lengthValue').textContent = this.value">
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="uppercase" checked class="mr-2">
+                                            <span>Uppercase (A-Z)</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="lowercase" checked class="mr-2">
+                                            <span>Lowercase (a-z)</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="numbers" checked class="mr-2">
+                                            <span>Numbers (0-9)</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="symbols" checked class="mr-2">
+                                            <span>Symbols (!@#$%)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-2">Password Strength</h4>
+                                <div class="strength-meter">
+                                    <div class="strength-bar" id="strength1"></div>
+                                    <div class="strength-bar" id="strength2"></div>
+                                    <div class="strength-bar" id="strength3"></div>
+                                    <div class="strength-bar" id="strength4"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2" id="strengthText">Strong</p>
+                            </div>
+                        </div>
+                    `;
+                
+                case 'code-formatter':
+                    return `
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <label class="block text-sm font-medium mb-2">Select Language</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="codeLanguage">
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="python">Python</option>
+                                    <option value="html">HTML</option>
+                                    <option value="css">CSS</option>
+                                    <option value="json">JSON</option>
+                                    <option value="xml">XML</option>
+                                </select>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <label class="block text-sm font-medium mb-2">Paste Your Code</label>
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg h-40 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" id="codeInput" placeholder="Paste your code here..."></textarea>
+                            </div>
+                            
+                            <button class="btn btn-primary w-full" onclick="formatCode()">
+                                <i class="fas fa-magic mr-2"></i>Format Code
+                            </button>
+                            
+                            <div id="codeResult" class="hidden">
+                                <h4 class="font-medium mb-2">Formatted Code</h4>
+                                <div class="code-editor" id="formattedCode"></div>
+                                <div class="mt-4 flex justify-end">
+                                    <button class="btn btn-secondary" onclick="copyCode()">
+                                        <i class="fas fa-copy mr-2"></i>Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                
+                case 'json-formatter':
+                    return `
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <label class="block text-sm font-medium mb-2">Paste JSON Data</label>
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg h-40 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" id="jsonInput" placeholder="Paste your JSON data here..."></textarea>
+                            </div>
+                            
+                            <div class="flex space-x-3">
+                                <button class="btn btn-primary flex-1" onclick="formatJSON()">
+                                    <i class="fas fa-magic mr-2"></i>Format JSON
+                                </button>
+                                <button class="btn btn-secondary flex-1" onclick="minifyJSON()">
+                                    <i class="fas fa-compress mr-2"></i>Minify JSON
+                                </button>
+                                <button class="btn btn-secondary flex-1" onclick="validateJSON()">
+                                    <i class="fas fa-check mr-2"></i>Validate JSON
+                                </button>
+                            </div>
+                            
+                            <div id="jsonResult" class="hidden">
+                                <h4 class="font-medium mb-2">Result</h4>
+                                <div class="code-editor" id="formattedJSON"></div>
+                                <div class="mt-4 flex justify-end">
+                                    <button class="btn btn-secondary" onclick="copyJSON()">
+                                        <i class="fas fa-copy mr-2"></i>Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                
+                case 'text-generator':
+                    return `
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <label class="block text-sm font-medium mb-2">What do you want to write about?</label>
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg h-32 focus:outline-none focus:ring-2 focus:ring-blue-500" id="textPrompt" placeholder="Enter your topic or prompt..."></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <label class="block text-sm font-medium mb-2">Content Type</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="contentType">
+                                        <option value="article">Article</option>
+                                        <option value="blog">Blog Post</option>
+                                        <option value="email">Email</option>
+                                        <option value="social">Social Media</option>
+                                        <option value="story">Story</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <label class="block text-sm font-medium mb-2">Tone</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="contentTone">
+                                        <option value="professional">Professional</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="friendly">Friendly</option>
+                                        <option value="formal">Formal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary w-full" onclick="generateText()">
+                                <i class="fas fa-magic mr-2"></i>Generate Text
+                            </button>
+                            
+                            <div id="textProgress" class="hidden">
+                                <div class="spinner"></div>
+                                <p class="text-center text-gray-600">Generating text, please wait...</p>
+                            </div>
+                            
+                            <div id="textResult" class="hidden">
+                                <h4 class="font-medium mb-2">Generated Text</h4>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p id="generatedText" class="whitespace-pre-line"></p>
+                                </div>
+                                <div class="mt-4 flex justify-end space-x-3">
+                                    <button class="btn btn-secondary" onclick="copyGeneratedText()">
+                                        <i class="fas fa-copy mr-2"></i>Copy
+                                    </button>
+                                    <button class="btn btn-primary" onclick="downloadGeneratedText()">
+                                        <i class="fas fa-download mr-2"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                
+                default:
+                    return `
+                        <div class="text-center py-12">
+                            <i class="fas fa-tools text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-2xl font-medium mb-2">${tool.name}</h3>
+                            <p class="text-gray-600 mb-6">This tool is under development and will be available soon.</p>
+                            <button class="btn btn-primary" onclick="closeModal()">
+                                Close
+                            </button>
+                        </div>
+                    `;
             }
-            
-            modalTitle.textContent = toolContent.title;
-            modalContent.innerHTML = toolContent.content;
-            toolModal.classList.remove('hidden');
-            
-            // Initialize tool-specific functionality
-            initializeToolFunctionality(toolName);
-            
-            // Share functionality
-            const shareTool = document.getElementById('share-tool');
-            if (shareTool) {
-                shareTool.addEventListener('click', () => {
-                    showNotification('Share link copied to clipboard!');
-                });
-            }
-            
-            // Favorite functionality
-            const favoriteTool = document.getElementById('favorite-tool');
-            if (favoriteTool) {
-                favoriteTool.addEventListener('click', () => {
-                    favoriteTool.innerHTML = favoriteTool.innerHTML.includes('far') ? 
-                        '<i class="fas fa-heart"></i>' : 
-                        '<i class="far fa-heart"></i>';
-                    
-                    showNotification(favoriteTool.innerHTML.includes('fas') ? 
-                        'Added to favorites!' : 
-                        'Removed from favorites!');
-                });
-            }
-            
-            // Report functionality
-            const reportTool = document.getElementById('report-tool');
-            if (reportTool) {
-                reportTool.addEventListener('click', () => {
-                    showNotification('Thank you for your report. We will review this tool.');
-                });
-            }
-            
-            // Star rating functionality
-            const stars = document.querySelectorAll('#tool-rating .star');
-            stars.forEach((star, index) => {
-                star.addEventListener('click', () => {
-                    const rating = index + 1;
-                    stars.forEach((s, i) => {
-                        if (i < rating) {
-                            s.classList.add('active');
-                        } else {
-                            s.classList.remove('active');
-                        }
-                    });
-                    showNotification(`You rated this tool ${rating} stars!`);
-                });
-            });
         }
 
-        // Initialize tool-specific functionality
-        function initializeToolFunctionality(toolName) {
-            // File upload functionality
-            const uploadArea = document.getElementById('upload-area');
-            const fileInput = document.getElementById('file-input');
-            const fileInfo = document.getElementById('file-info');
-            const fileName = document.getElementById('file-name');
-            const fileSize = document.getElementById('file-size');
-            const removeFile = document.getElementById('remove-file');
-            const processBtn = document.getElementById('process-btn') || document.getElementById('convert-btn') || 
-                              document.getElementById('resize-btn') || document.getElementById('generate-btn') || 
-                              document.getElementById('generate-text-btn');
+        // Tool Functions
+        function handlePDFUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
             
-            if (uploadArea && fileInput) {
-                uploadArea.addEventListener('click', () => {
-                    fileInput.click();
-                });
+            document.getElementById('pdfFileName').textContent = file.name;
+            document.getElementById('pdfFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            document.getElementById('pdfFileInfo').classList.remove('hidden');
+        }
+
+        function convertPDFToWord() {
+            const progressContainer = document.getElementById('pdfProgress');
+            const progressBar = document.getElementById('pdfProgressBar');
+            const progressText = document.getElementById('pdfProgressText');
+            const resultContainer = document.getElementById('pdfResult');
+            
+            progressContainer.classList.remove('hidden');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
                 
-                uploadArea.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.add('dragover');
-                });
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
                 
-                uploadArea.addEventListener('dragleave', () => {
-                    uploadArea.classList.remove('dragover');
-                });
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressContainer.classList.add('hidden');
+                    resultContainer.classList.remove('hidden');
+                    showNotification('PDF converted successfully!', 'success');
+                }
+            }, 200);
+        }
+
+        function handleOCRUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            document.getElementById('ocrFileName').textContent = file.name;
+            document.getElementById('ocrFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            document.getElementById('ocrFileInfo').classList.remove('hidden');
+        }
+
+        function extractTextFromImage() {
+            const progressContainer = document.getElementById('ocrProgress');
+            const progressBar = document.getElementById('ocrProgressBar');
+            const progressText = document.getElementById('ocrProgressText');
+            const resultContainer = document.getElementById('ocrResult');
+            
+            progressContainer.classList.remove('hidden');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 100) progress = 100;
                 
-                uploadArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadArea.classList.remove('dragover');
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressContainer.classList.add('hidden');
+                    resultContainer.classList.remove('hidden');
                     
-                    if (e.dataTransfer.files.length) {
-                        handleFileUpload(e.dataTransfer.files[0]);
-                    }
-                });
-                
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length) {
-                        handleFileUpload(e.target.files[0]);
-                    }
-                });
-                
-                removeFile.addEventListener('click', () => {
-                    fileInput.value = '';
-                    fileInfo.classList.add('hidden');
-                    if (processBtn) processBtn.disabled = true;
-                });
+                    // Simulate OCR result
+                    const sampleText = "This is a sample text extracted from the image using OCR technology. " +
+                                    "The OCR system has successfully recognized the characters and words in the image. " +
+                                    "This demonstrates the power of artificial intelligence in text recognition. " +
+                                    "The extracted text can be copied, downloaded, or used for further processing.";
+                    
+                    document.getElementById('extractedText').value = sampleText;
+                    showNotification('Text extracted successfully!', 'success');
+                }
+            }, 200);
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('passwordLength').value);
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let charset = '';
+            if (document.getElementById('uppercase').checked) charset += uppercase;
+            if (document.getElementById('lowercase').checked) charset += lowercase;
+            if (document.getElementById('numbers').checked) charset += numbers;
+            if (document.getElementById('symbols').checked) charset += symbols;
+            
+            if (charset === '') {
+                showNotification('Please select at least one character type!', 'error');
+                return;
             }
             
-            // Handle file upload
-            function handleFileUpload(file) {
-                fileName.textContent = file.name;
-                fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
-                fileInfo.classList.remove('hidden');
-                if (processBtn) processBtn.disabled = false;
-                
-                // Special handling for image resizer
-                if (toolName === 'image-resizer') {
-                    const imagePreview = document.getElementById('image-preview');
-                    const previewImg = document.getElementById('preview-img');
-                    
-                    if (imagePreview && previewImg) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            previewImg.src = e.target.result;
-                            imagePreview.classList.remove('hidden');
-                            
-                            // Get image dimensions
-                            previewImg.onload = () => {
-                                document.getElementById('width-input').value = previewImg.naturalWidth;
-                                document.getElementById('height-input').value = previewImg.naturalHeight;
-                            };
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
             }
             
-            // Process button functionality
-            if (processBtn) {
-                processBtn.addEventListener('click', () => {
-                    const progressContainer = document.getElementById('progress-container');
-                    const progressBar = document.getElementById('progress-bar');
-                    const progressPercent = document.getElementById('progress-percent');
-                    const resultContainer = document.getElementById('result-container');
-                    
-                    if (progressContainer && progressBar && progressPercent) {
-                        progressContainer.classList.remove('hidden');
-                        processBtn.disabled = true;
-                        
-                        // Simulate progress
-                        let progress = 0;
-                        const interval = setInterval(() => {
-                            progress += 5;
-                            progressBar.style.width = `${progress}%`;
-                            progressPercent.textContent = `${progress}%`;
-                            
-                            if (progress >= 100) {
-                                clearInterval(interval);
-                                progressContainer.classList.add('hidden');
-                                if (resultContainer) resultContainer.classList.remove('hidden');
-                            }
-                        }, 200);
-                    }
-                });
+            document.getElementById('generatedPassword').value = password;
+            updatePasswordStrength(password);
+        }
+
+        function updatePasswordStrength(password) {
+            let strength = 0;
+            const strengthBars = document.querySelectorAll('.strength-bar');
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Character variety check
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            // Update UI
+            strengthBars.forEach((bar, index) => {
+                bar.classList.remove('active', 'weak', 'medium', 'strong');
+                if (index < strength) {
+                    bar.classList.add('active');
+                    if (strength <= 2) bar.classList.add('weak');
+                    else if (strength <= 3) bar.classList.add('medium');
+                    else bar.classList.add('strong');
+                }
+            });
+            
+            // Update text
+            const strengthText = document.getElementById('strengthText');
+            if (strength <= 2) {
+                strengthText.textContent = 'Weak';
+                strengthText.className = 'text-sm text-red-600 mt-2';
+            } else if (strength <= 3) {
+                strengthText.textContent = 'Medium';
+                strengthText.className = 'text-sm text-yellow-600 mt-2';
+            } else {
+                strengthText.textContent = 'Strong';
+                strengthText.className = 'text-sm text-green-600 mt-2';
+            }
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('generatedPassword').value;
+            navigator.clipboard.writeText(password);
+            showNotification('Password copied to clipboard!', 'success');
+        }
+
+        function formatCode() {
+            const code = document.getElementById('codeInput').value;
+            const language = document.getElementById('codeLanguage').value;
+            
+            if (!code.trim()) {
+                showNotification('Please enter some code to format!', 'error');
+                return;
             }
             
-            // Download button functionality
-            const downloadBtn = document.getElementById('download-btn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', () => {
-                    // Create a temporary download link
-                    const link = document.createElement('a');
-                    link.href = '#';
-                    link.download = 'processed-file.ext';
-                    
-                    // For demo purposes, we'll just show a notification
-                    showNotification('Downloading file...');
-                    
-                    // In a real implementation, this would download the actual file
-                    setTimeout(() => {
-                        showNotification('Download complete!');
-                    }, 2000);
-                });
-            }
+            let formattedCode = code;
             
-            // Password generator functionality
-            if (toolName === 'password-generator') {
-                const lengthSlider = document.getElementById('length-slider');
-                const lengthValue = document.getElementById('length-value');
-                const generateBtn = document.getElementById('generate-btn');
-                const generatedPassword = document.getElementById('generated-password');
-                const copyPassword = document.getElementById('copy-password');
-                const refreshPassword = document.getElementById('refresh-password');
-                const strengthBar = document.getElementById('strength-bar');
-                const strengthText = document.getElementById('strength-text');
-                
-                if (lengthSlider && lengthValue) {
-                    lengthSlider.addEventListener('input', () => {
-                        lengthValue.textContent = lengthSlider.value;
-                        updatePasswordStrength();
-                    });
-                }
-                
-                if (generateBtn) {
-                    generateBtn.addEventListener('click', generatePassword);
-                }
-                
-                if (refreshPassword) {
-                    refreshPassword.addEventListener('click', generatePassword);
-                }
-                
-                if (copyPassword) {
-                    copyPassword.addEventListener('click', () => {
-                        if (generatedPassword) {
-                            navigator.clipboard.writeText(generatedPassword.value);
-                            showNotification('Password copied to clipboard!');
-                        }
-                    });
-                }
-                
-                // Generate initial password
-                generatePassword();
-                
-                function generatePassword() {
-                    const length = parseInt(lengthSlider.value);
-                    const uppercase = document.getElementById('uppercase').checked;
-                    const lowercase = document.getElementById('lowercase').checked;
-                    const numbers = document.getElementById('numbers').checked;
-                    const symbols = document.getElementById('symbols').checked;
-                    const excludeAmbiguous = document.getElementById('exclude-ambiguous').checked;
-                    const excludeBrackets = document.getElementById('exclude-brackets').checked;
-                    
-                    let charset = '';
-                    if (uppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                    if (lowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
-                    if (numbers) charset += '0123456789';
-                    if (symbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-                    
-                    if (excludeAmbiguous) {
-                        charset = charset.replace(/[il1Lo0O]/g, '');
-                    }
-                    
-                    if (excludeBrackets) {
-                        charset = charset.replace(/[\[\]{}()]/g, '');
-                    }
-                    
-                    if (charset === '') {
-                        showNotification('Please select at least one character type.');
+            // Basic formatting based on language
+            switch(language) {
+                case 'json':
+                    try {
+                        const parsed = JSON.parse(code);
+                        formattedCode = JSON.stringify(parsed, null, 2);
+                    } catch (e) {
+                        showNotification('Invalid JSON!', 'error');
                         return;
                     }
-                    
-                    let password = '';
-                    for (let i = 0; i < length; i++) {
-                        password += charset.charAt(Math.floor(Math.random() * charset.length));
-                    }
-                    
-                    generatedPassword.value = password;
-                    updatePasswordStrength();
-                }
-                
-                function updatePasswordStrength() {
-                    const password = generatedPassword.value;
-                    let strength = 0;
-                    
-                    // Length contributes to strength
-                    strength += Math.min(password.length / 4, 25);
-                    
-                    // Character types contribute to strength
-                    if (/[a-z]/.test(password)) strength += 15;
-                    if (/[A-Z]/.test(password)) strength += 15;
-                    if (/[0-9]/.test(password)) strength += 15;
-                    if (/[^a-zA-Z0-9]/.test(password)) strength += 30;
-                    
-                    // Cap at 100
-                    strength = Math.min(strength, 100);
-                    
-                    // Update UI
-                    strengthBar.style.width = `${strength}%`;
-                    
-                    if (strength < 40) {
-                        strengthBar.className = 'bg-red-500 h-2.5 rounded-full';
-                        strengthText.textContent = 'Weak';
-                        strengthText.className = 'text-sm font-medium text-red-600';
-                    } else if (strength < 70) {
-                        strengthBar.className = 'bg-yellow-500 h-2.5 rounded-full';
-                        strengthText.textContent = 'Medium';
-                        strengthText.className = 'text-sm font-medium text-yellow-600';
-                    } else {
-                        strengthBar.className = 'bg-green-500 h-2.5 rounded-full';
-                        strengthText.textContent = 'Strong';
-                        strengthText.className = 'text-sm font-medium text-green-600';
-                    }
-                }
+                    break;
+                case 'javascript':
+                case 'python':
+                case 'html':
+                case 'css':
+                    // Simple indentation
+                    formattedCode = code.split('\n').map(line => '    ' + line).join('\n');
+                    break;
             }
             
-            // Text generator functionality
-            if (toolName === 'text-generator') {
-                const generateTextBtn = document.getElementById('generate-text-btn');
-                const generatingContainer = document.getElementById('generating-container');
-                const resultContainer = document.getElementById('result-container');
-                const generatedText = document.getElementById('generated-text');
-                const copyText = document.getElementById('copy-text');
-                const regenerateText = document.getElementById('regenerate-text');
-                const saveText = document.getElementById('save-text');
-                
-                if (generateTextBtn) {
-                    generateTextBtn.addEventListener('click', () => {
-                        const prompt = document.getElementById('text-prompt').value.trim();
-                        
-                        if (!prompt) {
-                            showNotification('Please enter a text prompt.');
-                            return;
-                        }
-                        
-                        // Show generating container
-                        generatingContainer.classList.remove('hidden');
-                        resultContainer.classList.add('hidden');
-                        
-                        // Simulate AI generation delay
-                        setTimeout(() => {
-                            generatingContainer.classList.add('hidden');
-                            
-                            // Sample generated text (in a real implementation, this would come from an AI API)
-                            const sampleTexts = {
-                                article: `Introduction:\n${prompt}\n\nIn recent years, the topic has gained significant attention among experts and enthusiasts alike. This article explores the various aspects and implications of this subject matter.\n\nMain Body:\nThere are several key factors to consider when examining this topic. First, the historical context provides valuable insights into its evolution over time. Second, the current state of affairs reveals both challenges and opportunities for further development.\n\nConclusion:\nAs we look to the future, it's clear that this topic will continue to play a crucial role in shaping our understanding of the world. By staying informed and engaged, we can better navigate the complexities and possibilities that lie ahead.`,
-                                blog: `Hey everyone!\n\nToday I wanted to talk about ${prompt}. It's something that's been on my mind a lot lately, and I think it's worth sharing my thoughts with you all.\n\nWhen I first encountered this concept, I was skeptical. But the more I learned about it, the more I realized how impactful it can be. The key is to approach it with an open mind and a willingness to learn.\n\nWhat are your thoughts on this? Have you had any experiences with ${prompt}? I'd love to hear your perspectives in the comments below!\n\nThanks for reading, and stay tuned for more content coming soon!`,
-                                email: `Subject: Regarding ${prompt}\n\nDear [Recipient],\n\nI hope this email finds you well. I'm writing to discuss ${prompt} and its potential implications for our upcoming project.\n\nAfter careful consideration, I believe that incorporating these ideas could significantly enhance our outcomes. The main benefits include improved efficiency, better resource allocation, and a more streamlined workflow.\n\nI've attached a detailed document outlining my proposals and would appreciate your feedback at your earliest convenience. Please let me know if you'd like to schedule a meeting to discuss this further.\n\nLooking forward to your thoughts.\n\nBest regards,\n[Your Name]`,
-                                social: `Just discovered something amazing about ${prompt}! 🤯\n\nIt's incredible how much of a difference this can make in our daily lives. I've been trying it out for the past week and the results are speaking for themselves.\n\nWho else has experience with this? Would love to hear your stories! 👇\n\n#${prompt.replace(/\s+/g, '')} #LifeHacks #GameChanger`,
-                                story: `The sun rose over the horizon, casting long shadows across the landscape. In the distance, ${prompt} could be seen, a beacon of hope in an otherwise uncertain world.\n\nMaya had been searching for what felt like an eternity. The journey had been fraught with challenges, but she never lost sight of her goal. Now, standing before it, she felt a mix of excitement and trepidation.\n\nAs she approached, the details became clearer. It was even more magnificent than she had imagined. The stories hadn't done it justice.\n\nTaking a deep breath, Maya stepped forward, ready to embrace whatever came next.`,
-                                poem: `In whispers soft and dreams untold,\n${prompt} shines in hues of gold.\nA beacon bright in darkest night,\nGuiding souls with gentle light.\n\nThrough valleys deep and mountains high,\nIt catches every watchful eye.\nA constant in this world of change,\nA pattern beautiful and strange.\n\nSo let us pause and take heed,\nOf wondrous wonders sown by seed.\nFor in its presence, we are free,\nTo be the best that we can be.`
-                            };
-                            
-                            const contentType = document.getElementById('content-type').value;
-                            generatedText.textContent = sampleTexts[contentType] || sampleTexts.article;
-                            resultContainer.classList.remove('hidden');
-                        }, 2000);
-                    });
-                }
-                
-                if (copyText) {
-                    copyText.addEventListener('click', () => {
-                        if (generatedText) {
-                            navigator.clipboard.writeText(generatedText.textContent);
-                            showNotification('Text copied to clipboard!');
-                        }
-                    });
-                }
-                
-                if (regenerateText) {
-                    regenerateText.addEventListener('click', () => {
-                        if (generateTextBtn) {
-                            generateTextBtn.click();
-                        }
-                    });
-                }
-                
-                if (saveText) {
-                    saveText.addEventListener('click', () => {
-                        showNotification('Text saved to your account!');
-                    });
-                }
+            document.getElementById('formattedCode').textContent = formattedCode;
+            document.getElementById('codeResult').classList.remove('hidden');
+            showNotification('Code formatted successfully!', 'success');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('formattedCode').textContent;
+            navigator.clipboard.writeText(code);
+            showNotification('Code copied to clipboard!', 'success');
+        }
+
+        function formatJSON() {
+            const json = document.getElementById('jsonInput').value;
+            
+            if (!json.trim()) {
+                showNotification('Please enter JSON data!', 'error');
+                return;
             }
             
-            // Image resizer specific functionality
-            if (toolName === 'image-resizer') {
-                const widthInput = document.getElementById('width-input');
-                const heightInput = document.getElementById('height-input');
-                const maintainRatio = document.getElementById('maintain-ratio');
-                const previewImg = document.getElementById('preview-img');
-                
-                if (widthInput && heightInput && maintainRatio && previewImg) {
-                    let originalRatio = 1;
-                    
-                    previewImg.onload = () => {
-                        originalRatio = previewImg.naturalWidth / previewImg.naturalHeight;
-                    };
-                    
-                    widthInput.addEventListener('input', () => {
-                        if (maintainRatio.checked) {
-                            heightInput.value = Math.round(widthInput.value / originalRatio);
-                        }
-                    });
-                    
-                    heightInput.addEventListener('input', () => {
-                        if (maintainRatio.checked) {
-                            widthInput.value = Math.round(heightInput.value * originalRatio);
-                        }
-                    });
-                    
-                    maintainRatio.addEventListener('change', () => {
-                        if (maintainRatio.checked) {
-                            heightInput.value = Math.round(widthInput.value / originalRatio);
-                        }
-                    });
-                }
+            try {
+                const parsed = JSON.parse(json);
+                const formatted = JSON.stringify(parsed, null, 2);
+                document.getElementById('formattedJSON').textContent = formatted;
+                document.getElementById('jsonResult').classList.remove('hidden');
+                showNotification('JSON formatted successfully!', 'success');
+            } catch (e) {
+                showNotification('Invalid JSON: ' + e.message, 'error');
             }
         }
 
-        // Show notification
-        function showNotification(message) {
+        function minifyJSON() {
+            const json = document.getElementById('jsonInput').value;
+            
+            if (!json.trim()) {
+                showNotification('Please enter JSON data!', 'error');
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(json);
+                const minified = JSON.stringify(parsed);
+                document.getElementById('formattedJSON').textContent = minified;
+                document.getElementById('jsonResult').classList.remove('hidden');
+                showNotification('JSON minified successfully!', 'success');
+            } catch (e) {
+                showNotification('Invalid JSON: ' + e.message, 'error');
+            }
+        }
+
+        function validateJSON() {
+            const json = document.getElementById('jsonInput').value;
+            
+            if (!json.trim()) {
+                showNotification('Please enter JSON data!', 'error');
+                return;
+            }
+            
+            try {
+                JSON.parse(json);
+                document.getElementById('formattedJSON').textContent = '✅ Valid JSON';
+                document.getElementById('jsonResult').classList.remove('hidden');
+                showNotification('JSON is valid!', 'success');
+            } catch (e) {
+                document.getElementById('formattedJSON').textContent = '❌ Invalid JSON: ' + e.message;
+                document.getElementById('jsonResult').classList.remove('hidden');
+                showNotification('Invalid JSON!', 'error');
+            }
+        }
+
+        function copyJSON() {
+            const json = document.getElementById('formattedJSON').textContent;
+            navigator.clipboard.writeText(json);
+            showNotification('JSON copied to clipboard!', 'success');
+        }
+
+        function generateText() {
+            const prompt = document.getElementById('textPrompt').value;
+            const contentType = document.getElementById('contentType').value;
+            const contentTone = document.getElementById('contentTone').value;
+            
+            if (!prompt.trim()) {
+                showNotification('Please enter a prompt!', 'error');
+                return;
+            }
+            
+            const progressContainer = document.getElementById('textProgress');
+            const resultContainer = document.getElementById('textResult');
+            
+            progressContainer.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            
+            // Simulate AI generation delay
+            setTimeout(() => {
+                progressContainer.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+                
+                // Generate sample text based on content type
+                let generatedText = '';
+                switch(contentType) {
+                    case 'article':
+                        generatedText = `Introduction:\n${prompt}\n\nIn recent years, this topic has gained significant attention among experts and enthusiasts alike. This article explores the various aspects and implications of this subject matter.\n\nMain Body:\nThere are several key factors to consider when examining this topic. First, the historical context provides valuable insights into its evolution over time. Second, the current state of affairs reveals both challenges and opportunities for further development.\n\nConclusion:\nAs we look to the future, it's clear that this topic will continue to play a crucial role in shaping our understanding of the world. By staying informed and engaged, we can better navigate the complexities and possibilities that lie ahead.`;
+                        break;
+                    case 'blog':
+                        generatedText = `Hey everyone!\n\nToday I wanted to talk about ${prompt}. It's something that's been on my mind a lot lately, and I think it's worth sharing my thoughts with you all.\n\nWhen I first encountered this concept, I was skeptical. But the more I learned about it, the more I realized how impactful it can be. The key is to approach it with an open mind and a willingness to learn.\n\nWhat are your thoughts on this? Have you had any experiences with ${prompt}? I'd love to hear your perspectives in the comments below!\n\nThanks for reading, and stay tuned for more content coming soon!`;
+                        break;
+                    case 'email':
+                        generatedText = `Subject: Regarding ${prompt}\n\nDear [Recipient],\n\nI hope this email finds you well. I'm writing to discuss ${prompt} and its potential implications for our upcoming project.\n\nAfter careful consideration, I believe that incorporating these ideas could significantly enhance our outcomes. The main benefits include improved efficiency, better resource allocation, and a more streamlined workflow.\n\nI've attached a detailed document outlining my proposals and would appreciate your feedback at your earliest convenience. Please let me know if you'd like to schedule a meeting to discuss this further.\n\nLooking forward to your thoughts.\n\nBest regards,\n[Your Name]`;
+                        break;
+                    default:
+                        generatedText = `${prompt} is an interesting topic that deserves attention. It encompasses various aspects that are worth exploring in detail. Through careful analysis and consideration, we can gain valuable insights into this subject matter and its implications.`;
+                }
+                
+                document.getElementById('generatedText').textContent = generatedText;
+                showNotification('Text generated successfully!', 'success');
+            }, 2000);
+        }
+
+        function copyGeneratedText() {
+            const text = document.getElementById('generatedText').textContent;
+            navigator.clipboard.writeText(text);
+            showNotification('Text copied to clipboard!', 'success');
+        }
+
+        function downloadGeneratedText() {
+            const text = document.getElementById('generatedText').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'generated-text.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Text downloaded successfully!', 'success');
+        }
+
+        function copyText(textareaId) {
+            const text = document.getElementById(textareaId).value;
+            navigator.clipboard.writeText(text);
+            showNotification('Text copied to clipboard!', 'success');
+        }
+
+        function downloadText() {
+            const text = document.getElementById('extractedText').value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'extracted-text.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Text downloaded successfully!', 'success');
+        }
+
+        function downloadFile(filename) {
+            // Create a sample file for demonstration
+            const content = "This is a sample file generated by ToolVerse.\n\nIn a real implementation, this would contain the actual processed content from the tool.";
+            const blob = new Blob([content], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('File downloaded successfully!', 'success');
+        }
+
+        // Utility functions
+        function closeModal() {
+            document.getElementById('toolModal').classList.remove('active');
+        }
+
+        function showLegalPage(type) {
+            const modal = document.getElementById('legalModal');
+            const title = document.getElementById('legalTitle');
+            const content = document.getElementById('legalContent');
+            
+            const legalPages = {
+                privacy: {
+                    title: 'Privacy Policy',
+                    content: `
+                        <div class="legal-content">
+                            <h2>Privacy Policy</h2>
+                            <p>Last updated: November 15, 2023</p>
+                            
+                            <h3>Information We Collect</h3>
+                            <p>We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include:</p>
+                            <ul>
+                                <li>Personal identification information (name, email address)</li>
+                                <li>Files you upload for processing</li>
+                                <li>Usage data and analytics</li>
+                                <li>Device and browser information</li>
+                            </ul>
+                            
+                            <h3>How We Use Your Information</h3>
+                            <p>We use the information we collect to:</p>
+                            <ul>
+                                <li>Provide and maintain our services</li>
+                                <li>Process your files and deliver results</li>
+                                <li>Improve our services and develop new features</li>
+                                <li>Communicate with you about your account</li>
+                                <li>Monitor and analyze usage patterns</li>
+                            </ul>
+                            
+                            <h3>Data Security</h3>
+                            <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These include:</p>
+                            <ul>
+                                <li>Encryption of sensitive data in transit and at rest</li>
+                                <li>Secure file storage with automatic deletion after 24 hours</li>
+                                <li>Regular security assessments and updates</li>
+                                <li>Restricted access to personal data</li>
+                            </ul>
+                            
+                            <h3>Contact Us</h3>
+                            <p>If you have any questions about this Privacy Policy, please contact us at privacy@toolverse.com</p>
+                        </div>
+                    `
+                },
+                terms: {
+                    title: 'Terms of Service',
+                    content: `
+                        <div class="legal-content">
+                            <h2>Terms of Service</h2>
+                            <p>Last updated: November 15, 2023</p>
+                            
+                            <h3>Acceptance of Terms</h3>
+                            <p>By accessing and using ToolVerse, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                            
+                            <h3>Use License</h3>
+                            <p>Permission is granted to temporarily download one copy of the materials (information or software) on ToolVerse for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+                            <ul>
+                                <li>modify or copy the materials</li>
+                                <li>use the materials for any commercial purpose</li>
+                                <li>attempt to decompile or reverse engineer any software contained on ToolVerse</li>
+                                <li>remove any copyright or other proprietary notations from the materials</li>
+                                <li>transfer the materials to another person or "mirror" the materials on any other server</li>
+                            </ul>
+                            
+                            <h3>Disclaimer</h3>
+                            <p>The materials on ToolVerse are provided on an 'as is' basis. ToolVerse makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+                            
+                            <h3>Limitations</h3>
+                            <p>In no event shall ToolVerse or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on ToolVerse, even if ToolVerse or a ToolVerse authorized representative has been notified orally or in writing of the possibility of such damage.</p>
+                        </div>
+                    `
+                },
+                cookies: {
+                    title: 'Cookie Policy',
+                    content: `
+                        <div class="legal-content">
+                            <h2>Cookie Policy</h2>
+                            <p>Last updated: November 15, 2023</p>
+                            
+                            <h3>What Are Cookies</h3>
+                            <p>Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used by website owners to make their websites work, or work more efficiently, as well as to provide reporting information.</p>
+                            
+                            <h3>How We Use Cookies</h3>
+                            <p>We use cookies for several purposes:</p>
+                            <ul>
+                                <li><strong>Essential Cookies:</strong> These cookies are necessary for the website to function and cannot be switched off in our systems.</li>
+                                <li><strong>Performance Cookies:</strong> These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.</li>
+                                <li><strong>Functional Cookies:</strong> These cookies enable the website to provide enhanced functionality and personalization.</li>
+                                <li><strong>Targeting Cookies:</strong> These cookies may be set through our site by our advertising partners to build a profile of your interests.</li>
+                            </ul>
+                            
+                            <h3>Managing Cookies</h3>
+                            <p>You can manage your cookie preferences through your browser settings. Most browsers allow you to:</p>
+                            <ul>
+                                <li>View the cookies that have been set</li>
+                                <li>Delete existing cookies</li>
+                                <li>Block cookies from specific websites</li>
+                                <li>Block all cookies</li>
+                                <li>Block third-party cookies</li>
+                                <li>Clear cookies when you close your browser</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                gdpr: {
+                    title: 'GDPR Compliance',
+                    content: `
+                        <div class="legal-content">
+                            <h2>GDPR Compliance</h2>
+                            <p>Last updated: November 15, 2023</p>
+                            
+                            <h3>Introduction</h3>
+                            <p>ToolVerse is committed to protecting and respecting your privacy. This GDPR Compliance Statement explains how we collect, use, and protect your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
+                            
+                            <h3>Data Controller</h3>
+                            <p>ToolVerse is the data controller responsible for your personal data. Our contact details are:</p>
+                            <p>Email: gdpr@toolverse.com<br>
+                            Address: [Your Company Address]</p>
+                            
+                            <h3>Your Rights Under GDPR</h3>
+                            <p>Under the GDPR, you have the following rights:</p>
+                            <ul>
+                                <li><strong>Right to be informed:</strong> You have the right to be informed about how we use your personal data.</li>
+                                <li><strong>Right of access:</strong> You have the right to access the personal data we hold about you.</li>
+                                <li><strong>Right to rectification:</strong> You have the right to have inaccurate personal data corrected.</li>
+                                <li><strong>Right to erasure:</strong> You have the right to have your personal data deleted in certain circumstances.</li>
+                                <li><strong>Right to restrict processing:</strong> You have the right to restrict the processing of your personal data.</li>
+                                <li><strong>Right to data portability:</strong> You have the right to obtain and reuse your personal data.</li>
+                                <li><strong>Right to object:</strong> You have the right to object to the processing of your personal data.</li>
+                            </ul>
+                            
+                            <h3>Data Security</h3>
+                            <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction. These include:</p>
+                            <ul>
+                                <li>Encryption of sensitive data</li>
+                                <li>Regular security assessments</li>
+                                <li>Access controls and authentication</li>
+                                <li>Employee training on data protection</li>
+                                <li>Data breach notification procedures</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            const page = legalPages[type];
+            title.textContent = page.title;
+            content.innerHTML = page.content;
+            modal.classList.add('active');
+        }
+
+        function closeLegalModal() {
+            document.getElementById('legalModal').classList.remove('active');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
             notificationText.textContent = message;
-            notification.classList.add('show');
+            notification.className = 'notification show ' + type;
             
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
+
+        // Initialize password generator on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            generatePassword();
+        });
     </script>
 </body>
 </html>
