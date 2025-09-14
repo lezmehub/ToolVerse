@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolVerse - The Universe of Online Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        * {
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body.dark .bg-white {
+            background-color: #1e293b;
+        }
+
+        body.dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+
+        body.dark .text-gray-600 {
+            color: #cbd5e1;
+        }
+
+        body.dark .text-gray-500 {
+            color: #94a3b8;
+        }
+
+        body.dark .bg-gray-50 {
+            background-color: #0f172a;
+        }
+
+        body.dark .bg-gray-100 {
+            background-color: #1e293b;
+        }
+
+        body.dark .bg-gray-200 {
+            background-color: #334155;
+        }
+
+        body.dark .border-gray-200 {
+            border-color: #334155;
+        }
+
+        body.dark .hover\:bg-gray-100:hover {
+            background-color: #334155;
+        }
+
+        .tool-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .category-tab {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .category-tab.active::after {
+            width: 100%;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .search-suggestion {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .search-suggestion.active {
+            max-height: 300px;
+        }
+
+        .star-rating {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .star {
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: #fbbf24;
+        }
+
+        .tool-recommendation {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        .tool-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--secondary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        body.dark .user-menu {
+            background-color: #1e293b;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 0.5s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-2 rounded-lg">
+                    <i class="fas fa-cube text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">ToolVerse</h1>
+            </div>
+            
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition">Home</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition">Tools</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition">Pricing</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition">About</a>
+                <a href="#" class="text-gray-600 hover:text-indigo-600 transition">API</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button id="dark-mode-toggle" class="text-gray-600 hover:text-indigo-600 transition">
+                    <i class="fas fa-moon text-xl"></i>
+                </button>
+                
+                <div class="relative">
+                    <button id="user-menu-btn" class="flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-user text-indigo-600"></i>
+                        </div>
+                        <span class="hidden md:inline">Guest</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    
+                    <div id="user-menu" class="user-menu">
+                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Sign In</a>
+                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Create Account</a>
+                        <hr class="my-1 border-gray-200">
+                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Settings</a>
+                        <a href="#" class="block px-4 py-3 hover:bg-gray-100 transition">Help</a>
+                    </div>
+                </div>
+                
+                <button class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">The Universe of Online Tools</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Discover, use, and share powerful tools for all your digital needs</p>
+            
+            <div class="relative max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Search for tools..." class="w-full py-4 px-6 pr-12 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 shadow-lg">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="search-suggestions" class="search-suggestion absolute w-full bg-white rounded-lg shadow-lg mt-2 overflow-hidden">
+                    <div class="p-2">
+                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
+                            <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                            <span>PDF to Word Converter</span>
+                        </div>
+                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
+                            <i class="fas fa-image text-green-500 mr-3"></i>
+                            <span>Image Background Remover</span>
+                        </div>
+                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
+                            <i class="fas fa-code text-yellow-500 mr-3"></i>
+                            <span>JavaScript Formatter</span>
+                        </div>
+                        <div class="px-4 py-2 hover:bg-gray-100 rounded cursor-pointer flex items-center">
+                            <i class="fas fa-lock text-red-500 mr-3"></i>
+                            <span>Password Generator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>100+ Tools</span>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-users mr-2"></i>
+                    <span>1M+ Users</span>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    <span>Secure & Private</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Tabs -->
+    <section class="bg-white shadow-sm sticky top-16 z-30">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-3 space-x-6 hide-scrollbar">
+                <button class="category-tab active whitespace-nowrap pb-2 font-medium text-indigo-600" data-category="all">
+                    <i class="fas fa-th-large mr-2"></i>All Tools
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="pdf">
+                    <i class="fas fa-file-pdf mr-2"></i>PDF Tools
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="image">
+                    <i class="fas fa-image mr-2"></i>Image Tools
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="video">
+                    <i class="fas fa-video mr-2"></i>Video & Audio
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="code">
+                    <i class="fas fa-code mr-2"></i>Code Tools
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="security">
+                    <i class="fas fa-shield-alt mr-2"></i>Security
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="ai">
+                    <i class="fas fa-brain mr-2"></i>AI Tools
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="converter">
+                    <i class="fas fa-exchange-alt mr-2"></i>Converters
+                </button>
+                <button class="category-tab whitespace-nowrap pb-2 font-medium text-gray-600" data-category="generator">
+                    <i class="fas fa-magic mr-2"></i>Generators
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Tools Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Popular Tools</h2>
+            <a href="#" class="text-indigo-600 hover:text-indigo-800 transition">View All <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Popular tools will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Recommended Tools Section -->
+    <section class="container mx-auto px-4 py-8 bg-white rounded-xl shadow-sm">
+        <h2 class="text-2xl font-bold mb-6">Recommended For You</h2>
+        <div id="recommended-tools" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Recommended tools will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">All Tools</h2>
+            <div class="flex space-x-3">
+                <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                    <i class="fas fa-th-large mr-2"></i>Grid
+                </button>
+                <button class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                    <i class="fas fa-list mr-2"></i>List
+                </button>
+            </div>
+        </div>
+        
+        <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Tools will be loaded here -->
+        </div>
+        
+        <div class="text-center mt-10">
+            <button id="load-more-btn" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                Load More Tools
+            </button>
+        </div>
+    </main>
+
+    <!-- Tool Modal -->
+    <div id="tool-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="modal-title" class="text-xl font-semibold">Tool Name</h3>
+                <div class="flex items-center space-x-4">
+                    <button id="share-tool" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button id="favorite-tool" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <button id="close-modal" class="hover:bg-white hover:bg-opacity-20 p-2 rounded-full transition">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="modal-content" class="p-6 overflow-y-auto flex-grow">
+                <!-- Tool content will be dynamically loaded here -->
+            </div>
+            
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="star-rating" id="tool-rating">
+                            <i class="fas fa-star star" data-rating="1"></i>
+                            <i class="fas fa-star star" data-rating="2"></i>
+                            <i class="fas fa-star star" data-rating="3"></i>
+                            <i class="fas fa-star star" data-rating="4"></i>
+                            <i class="fas fa-star star" data-rating="5"></i>
+                        </div>
+                        <span class="text-sm text-gray-600">(4.5/5 - 128 reviews)</span>
+                    </div>
+                    <button id="report-tool" class="text-red-500 hover:text-red-700 transition">
+                        <i class="fas fa-flag mr-1"></i> Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span id="notification-text">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-2 rounded-lg">
+                            <i class="fas fa-cube text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold">ToolVerse</h2>
+                    </div>
+                    <p class="text-gray-400">The universe of online tools for all your digital needs.</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tools</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">PDF Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition">Image Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition">Video Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition">Code Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition">Security Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition">AI Tools</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition">Press</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">GDPR</a></li>
+                    </ul>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-2">Subscribe to our newsletter</h4>
+                        <div class="flex">
+                            <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg text-gray-800 w-full focus:outline-none">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-r-lg transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 ToolVerse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tools data
+        const toolsData = [
+            // PDF Tools
+            { id: 1, name: 'PDF to Word', category: 'pdf', icon: 'fa-file-word', color: 'blue', description: 'Convert PDF documents to Word files', rating: 4.7, popular: true },
+            { id: 2, name: 'Word to PDF', category: 'pdf', icon: 'fa-file-pdf', color: 'blue', description: 'Convert Word documents to PDF files', rating: 4.5 },
+            { id: 3, name: 'PDF to Image', category: 'pdf', icon: 'fa-file-image', color: 'blue', description: 'Convert PDF pages to image files', rating: 4.3 },
+            { id: 4, name: 'PDF Merger', category: 'pdf', icon: 'fa-object-group', color: 'blue', description: 'Merge multiple PDF files into one', rating: 4.6, popular: true },
+            { id: 5, name: 'PDF Splitter', category: 'pdf', icon: 'fa-cut', color: 'blue', description: 'Split PDF files into multiple documents', rating: 4.4 },
+            { id: 6, name: 'PDF Compressor', category: 'pdf', icon: 'fa-compress', color: 'blue', description: 'Compress PDF files to reduce size', rating: 4.2 },
+            { id: 7, name: 'PDF Password', category: 'pdf', icon: 'fa-lock', color: 'blue', description: 'Add or remove password protection', rating: 4.5 },
+            { id: 8, name: 'PDF OCR', category: 'pdf', icon: 'fa-eye', color: 'blue', description: 'Extract text from scanned PDFs', rating: 4.1 },
+            
+            // Image Tools
+            { id: 9, name: 'Image Resizer', category: 'image', icon: 'fa-expand-arrows-alt', color: 'green', description: 'Resize images to desired dimensions', rating: 4.8, popular: true },
+            { id: 10, name: 'Background Remover', category: 'image', icon: 'fa-eraser', color: 'green', description: 'Remove background from images', rating: 4.7 },
+            { id: 11, name: 'Image Beautifier', category: 'image', icon: 'fa-magic', color: 'green', description: 'Enhance and beautify your images', rating: 4.5 },
+            { id: 12, name: 'Image Cropper', category: 'image', icon: 'fa-crop', color: 'green', description: 'Crop images to perfect dimensions', rating: 4.6 },
+            { id: 13, name: 'Image Compressor', category: 'image', icon: 'fa-compress', color: 'green', description: 'Compress images without quality loss', rating: 4.4 },
+            { id: 14, name: 'Image Converter', category: 'image', icon: 'fa-exchange-alt', color: 'green', description: 'Convert between image formats', rating: 4.3 },
+            { id: 15, name: 'Watermark Adder', category: 'image', icon: 'fa-tint', color: 'green', description: 'Add watermarks to your images', rating: 4.2 },
+            { id: 16, name: 'Image Collage', category: 'image', icon: 'fa-th', color: 'green', description: 'Create beautiful image collages', rating: 4.5 },
+            
+            // Video & Audio Tools
+            { id: 17, name: 'Video Converter', category: 'video', icon: 'fa-exchange-alt', color: 'purple', description: 'Convert videos to different formats', rating: 4.6, popular: true },
+            { id: 18, name: 'Video Trimmer', category: 'video', icon: 'fa-cut', color: 'purple', description: 'Trim videos to desired length', rating: 4.5 },
+            { id: 19, name: 'Video Compressor', category: 'video', icon: 'fa-compress', color: 'purple', description: 'Compress videos to reduce file size', rating: 4.4 },
+            { id: 20, name: 'Video to GIF', category: 'video', icon: 'fa-film', color: 'purple', description: 'Convert videos to animated GIFs', rating: 4.3 },
+            { id: 21, name: 'GIF to Video', category: 'video', icon: 'fa-video', color: 'purple', description: 'Convert GIFs to video files', rating: 4.2 },
+            { id: 22, name: 'Audio Converter', category: 'video', icon: 'fa-music', color: 'purple', description: 'Convert audio files between formats', rating: 4.5 },
+            { id: 23, name: 'Audio Trimmer', category: 'video', icon: 'fa-cut', color: 'purple', description: 'Trim audio files to desired length', rating: 4.4 },
+            { id: 24, name: 'Audio Merger', category: 'video', icon: 'fa-object-group', color: 'purple', description: 'Merge multiple audio files', rating: 4.3 },
+            
+            // Code Tools
+            { id: 25, name: 'Code Compiler', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Compile and run code online', rating: 4.7, popular: true },
+            { id: 26, name: 'Code Obfuscator', category: 'code', icon: 'fa-lock', color: 'yellow', description: 'Obfuscate your code to protect it', rating: 4.4 },
+            { id: 27, name: 'Code Formatter', category: 'code', icon: 'fa-align-left', color: 'yellow', description: 'Format and beautify your code', rating: 4.6 },
+            { id: 28, name: 'JSON Formatter', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Format and validate JSON data', rating: 4.8 },
+            { id: 29, name: 'XML Formatter', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Format and validate XML data', rating: 4.5 },
+            { id: 30, name: 'CSS Minifier', category: 'code', icon: 'fa-compress', color: 'yellow', description: 'Minify CSS files', rating: 4.3 },
+            { id: 31, name: 'JS Minifier', category: 'code', icon: 'fa-compress', color: 'yellow', description: 'Minify JavaScript files', rating: 4.4 },
+            { id: 32, name: 'HTML Encoder', category: 'code', icon: 'fa-code', color: 'yellow', description: 'Encode/decode HTML entities', rating: 4.2 },
+            
+            // Security Tools
+            { id: 33, name: 'Text Encryption', category: 'security', icon: 'fa-lock', color: 'red', description: 'Encrypt your text securely', rating: 4.6, popular: true },
+            { id: 34, name: 'Text Decryption', category: 'security', icon: 'fa-unlock', color: 'red', description: 'Decrypt encrypted text', rating: 4.5 },
+            { id: 35, name: 'Password Generator', category: 'security', icon: 'fa-key', color: 'red', description: 'Generate strong passwords', rating: 4.8 },
+            { id: 36, name: 'Hash Generator', category: 'security', icon: 'fa-hashtag', color: 'red', description: 'Generate MD5, SHA1, SHA256 hashes', rating: 4.4 },
+            { id: 37, name: 'Base64 Encoder', category: 'security', icon: 'fa-code', color: 'red', description: 'Encode/decode Base64 data', rating: 4.3 },
+            { id: 38, name: 'URL Encoder', category: 'security', icon: 'fa-link', color: 'red', description: 'Encode/decode URLs', rating: 4.2 },
+            { id: 39, name: 'QR Generator', category: 'security', icon: 'fa-qrcode', color: 'red', description: 'Generate QR codes', rating: 4.5 },
+            { id: 40, name: 'Password Strength', category: 'security', icon: 'fa-shield-alt', color: 'red', description: 'Check password strength', rating: 4.6 },
+            
+            // AI Tools
+            { id: 41, name: 'Text Generator', category: 'ai', icon: 'fa-pen-fancy', color: 'indigo', description: 'Generate text using AI', rating: 4.7, popular: true },
+            { id: 42, name: 'Image Generator', category: 'ai', icon: 'fa-image', color: 'indigo', description: 'Generate images from text', rating: 4.6 },
+            { id: 43, name: 'Image to Text', category: 'ai', icon: 'fa-eye', color: 'indigo', description: 'Extract text from images (OCR)', rating: 4.5 },
+            { id: 44, name: 'Text Summarizer', category: 'ai', icon: 'fa-file-alt', color: 'indigo', description: 'Summarize long texts', rating: 4.4 },
+            { id: 45, name: 'Grammar Checker', category: 'ai', icon: 'fa-spell-check', color: 'indigo', description: 'Check grammar and spelling', rating: 4.3 },
+            { id: 46, name: 'Translator', category: 'ai', icon: 'fa-language', color: 'indigo', description: 'Translate text between languages', rating: 4.6 },
+            { id: 47, name: 'Code Generator', category: 'ai', icon: 'fa-code', color: 'indigo', description: 'Generate code from descriptions', rating: 4.2 },
+            { id: 48, name: 'AI Chat', category: 'ai', icon: 'fa-comments', color: 'indigo', description: 'Chat with AI assistant', rating: 4.5 },
+            
+            // Converters
+            { id: 49, name: 'Unit Converter', category: 'converter', icon: 'fa-balance-scale', color: 'teal', description: 'Convert between different units', rating: 4.5, popular: true },
+            { id: 50, name: 'Currency Converter', category: 'converter', icon: 'fa-dollar-sign', color: 'teal', description: 'Convert between currencies', rating: 4.4 },
+            { id: 51, name: 'Time Zone Converter', category: 'converter', icon: 'fa-clock', color: 'teal', description: 'Convert between time zones', rating: 4.3 },
+            { id: 52, name: 'Number Base Converter', category: 'converter', icon: 'fa-calculator', color: 'teal', description: 'Convert between number bases', rating: 4.2 },
+            
+            // Generators
+            { id: 53, name: 'Lorem Ipsum', category: 'generator', icon: 'fa-font', color: 'pink', description: 'Generate placeholder text', rating: 4.3, popular: true },
+            { id: 54, name: 'Color Palette', category: 'generator', icon: 'fa-palette', color: 'pink', description: 'Generate color palettes', rating: 4.5 },
+            { id: 55, name: 'UUID Generator', category: 'generator', icon: 'fa-fingerprint', color: 'pink', description: 'Generate unique identifiers', rating: 4.2 },
+            { id: 56, name: 'Barcode Generator', category: 'generator', icon: 'fa-barcode', color: 'pink', description: 'Generate barcodes', rating: 4.1 },
+        ];
+
+        // Tool content templates
+        const toolContents = {
+            'pdf-to-word': {
+                title: 'PDF to Word Converter',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-blue-800">Convert your PDF documents to editable Word files. Simply upload your PDF file and we'll convert it for you.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-600 mb-2">Drag & drop your PDF file here</p>
+                                    <p class="text-sm text-gray-500">or click to browse</p>
+                                    <p class="text-sm text-gray-500 mt-2">Maximum file size: 50MB</p>
+                                    <input type="file" id="file-input" class="hidden" accept=".pdf">
+                                </div>
+                                
+                                <div id="file-info" class="hidden bg-blue-50 p-4 rounded-lg mt-4">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium" id="file-name">filename.pdf</p>
+                                            <p class="text-sm text-gray-500" id="file-size">0 MB</p>
+                                        </div>
+                                        <button id="remove-file" class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium mb-3">Conversion Options</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Output Format</label>
+                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <option>.docx (Recommended)</option>
+                                                <option>.doc</option>
+                                                <option>.rtf</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">OCR Language</label>
+                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <option>Auto Detect</option>
+                                                <option>English</option>
+                                                <option>Spanish</option>
+                                                <option>French</option>
+                                                <option>German</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500" checked>
+                                                <span class="ml-2 text-sm text-gray-700">Preserve formatting</span>
+                                            </label>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500">
+                                                <span class="ml-2 text-sm text-gray-700">Extract images</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <button id="convert-btn" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition disabled:opacity-50" disabled>
+                                        Convert PDF to Word
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="progress-container" class="hidden">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-blue-800">Converting your file...</span>
+                                    <span class="text-sm font-medium text-blue-800" id="progress-percent">0%</span>
+                                </div>
+                                <div class="w-full bg-blue-200 rounded-full h-2.5">
+                                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="font-medium text-green-800">Conversion Complete!</p>
+                                    <p class="text-sm text-green-600">Your file is ready to download</p>
+                                </div>
+                                <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                                    <i class="fas fa-download mr-2"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'image-resizer': {
+                title: 'Image Resizer',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-green-800">Resize your images to the exact dimensions you need. Maintain aspect ratio or set custom dimensions.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-gray-600 mb-2">Drag & drop your image here</p>
+                                    <p class="text-sm text-gray-500">or click to browse</p>
+                                    <p class="text-sm text-gray-500 mt-2">Supports: JPG, PNG, GIF, WebP (Max: 10MB)</p>
+                                    <input type="file" id="file-input" class="hidden" accept="image/*">
+                                </div>
+                                
+                                <div id="file-info" class="hidden bg-green-50 p-4 rounded-lg mt-4">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="font-medium" id="file-name">image.jpg</p>
+                                            <p class="text-sm text-gray-500" id="file-size">0 MB</p>
+                                        </div>
+                                        <button id="remove-file" class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div id="image-preview" class="hidden">
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+                                        <h4 class="font-medium mb-3">Preview</h4>
+                                        <div class="flex justify-center">
+                                            <img id="preview-img" src="" alt="Preview" class="max-h-64 rounded-lg shadow-md">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                        <h4 class="font-medium mb-3">Resize Options</h4>
+                                        
+                                        <div class="grid grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Width (px)</label>
+                                                <input type="number" id="width-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" value="800">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Height (px)</label>
+                                                <input type="number" id="height-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" value="600">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="maintain-ratio" class="rounded text-green-600 focus:ring-green-500" checked>
+                                                    <span class="ml-2 text-sm text-gray-700">Maintain aspect ratio</span>
+                                                </label>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Output Format</label>
+                                                <select id="format-select" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                                    <option value="jpeg">JPEG</option>
+                                                    <option value="png">PNG</option>
+                                                    <option value="webp">WebP</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Quality</label>
+                                                <input type="range" min="1" max="100" value="90" class="w-full">
+                                                <div class="flex justify-between text-xs text-gray-500">
+                                                    <span>Low</span>
+                                                    <span>High</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button id="resize-btn" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition disabled:opacity-50" disabled>
+                                            Resize Image
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="progress-container" class="hidden">
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-green-800">Resizing your image...</span>
+                                    <span class="text-sm font-medium text-green-800" id="progress-percent">0%</span>
+                                </div>
+                                <div class="w-full bg-green-200 rounded-full h-2.5">
+                                    <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="font-medium text-green-800">Resize Complete!</p>
+                                    <p class="text-sm text-green-600">Your image is ready to download</p>
+                                </div>
+                                <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                                    <i class="fas fa-download mr-2"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'password-generator': {
+                title: 'Password Generator',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <p class="text-red-800">Generate strong and secure passwords. Customize the length and character types to meet your requirements.</p>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-medium">Generated Password</h4>
+                                <div class="flex space-x-2">
+                                    <button id="copy-password" class="text-gray-600 hover:text-gray-800 transition p-2">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button id="refresh-password" class="text-gray-600 hover:text-gray-800 transition p-2">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                                <input type="text" id="generated-password" class="bg-transparent font-mono text-lg w-full focus:outline-none" readonly>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-medium mb-3">Password Settings</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Password Length</label>
+                                            <div class="flex items-center space-x-3">
+                                                <input type="range" id="length-slider" min="6" max="50" value="16" class="w-full">
+                                                <span id="length-value" class="text-sm font-medium w-8">16</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Character Types</label>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="uppercase" class="rounded text-red-600 focus:ring-red-500" checked>
+                                                    <span class="ml-2 text-sm text-gray-700">Uppercase (A-Z)</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="lowercase" class="rounded text-red-600 focus:ring-red-500" checked>
+                                                    <span class="ml-2 text-sm text-gray-700">Lowercase (a-z)</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="numbers" class="rounded text-red-600 focus:ring-red-500" checked>
+                                                    <span class="ml-2 text-sm text-gray-700">Numbers (0-9)</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="symbols" class="rounded text-red-600 focus:ring-red-500" checked>
+                                                    <span class="ml-2 text-sm text-gray-700">Symbols (!@#$%^&*)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Exclude Characters</label>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="exclude-ambiguous" class="rounded text-red-600 focus:ring-red-500">
+                                                    <span class="ml-2 text-sm text-gray-700">Ambiguous (i, l, 1, L)</span>
+                                                </label>
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="exclude-brackets" class="rounded text-red-600 focus:ring-red-500">
+                                                    <span class="ml-2 text-sm text-gray-700">Brackets ([{()}])</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-medium mb-3">Password Strength</h4>
+                                    
+                                    <div class="mb-4">
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm text-gray-600">Strength</span>
+                                            <span id="strength-text" class="text-sm font-medium">Strong</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div id="strength-bar" class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-sm mb-2">Password Analysis</h5>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                <span>Contains uppercase letters</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                <span>Contains lowercase letters</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                <span>Contains numbers</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                <span>Contains symbols</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                <span>Length is sufficient</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <button id="generate-btn" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition">
+                                        Generate New Password
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="copy-notification" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                            <p class="text-sm">Password copied to clipboard!</p>
+                        </div>
+                    </div>
+                `
+            },
+            'text-generator': {
+                title: 'AI Text Generator',
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-indigo-800">Generate text content using advanced AI. Simply provide a prompt and let AI create the content for you.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2">
+                                <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                    <h4 class="font-medium mb-4">Text Prompt</h4>
+                                    <textarea id="text-prompt" rows="6" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter a prompt to generate text..."></textarea>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
+                                            <select id="content-type" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="article">Article</option>
+                                                <option value="blog">Blog Post</option>
+                                                <option value="email">Email</option>
+                                                <option value="social">Social Media</option>
+                                                <option value="story">Story</option>
+                                                <option value="poem">Poem</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Tone</label>
+                                            <select id="content-tone" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="professional">Professional</option>
+                                                <option value="casual">Casual</option>
+                                                <option value="friendly">Friendly</option>
+                                                <option value="formal">Formal</option>
+                                                <option value="humorous">Humorous</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Length</label>
+                                            <select id="content-length" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="short">Short (100 words)</option>
+                                                <option value="medium">Medium (300 words)</option>
+                                                <option value="long">Long (500 words)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 flex justify-end">
+                                        <button id="generate-text-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition flex items-center">
+                                            <i class="fas fa-magic mr-2"></i> Generate Text
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                    <h4 class="font-medium mb-4">AI Settings</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Creativity Level</label>
+                                            <input type="range" min="1" max="10" value="7" class="w-full">
+                                            <div class="flex justify-between text-xs text-gray-500">
+                                                <span>Conservative</span>
+                                                <span>Creative</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">AI Model</label>
+                                            <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option>GPT-4 (Recommended)</option>
+                                                <option>GPT-3.5</option>
+                                                <option>Claude</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" checked>
+                                                <span class="ml-2 text-sm text-gray-700">Include examples</span>
+                                            </label>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="flex items-center">
+                                                <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500">
+                                                <span class="ml-2 text-sm text-gray-700">Add references</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-sm mb-2">Usage Statistics</h5>
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between text-sm">
+                                                <span class="text-gray-600">Requests this month</span>
+                                                <span class="font-medium">24 / 100</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 24%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="generating-container" class="hidden bg-white border border-gray-200 rounded-lg p-8 text-center">
+                            <div class="loader mx-auto mb-4"></div>
+                            <p class="text-gray-600">Generating text, please wait...</p>
+                            <p class="text-sm text-gray-500 mt-2">This may take a few moments</p>
+                        </div>
+                        
+                        <div id="result-container" class="hidden bg-white border border-gray-200 rounded-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-medium">Generated Text</h4>
+                                <div class="flex space-x-2">
+                                    <button id="copy-text" class="text-gray-600 hover:text-gray-800 transition p-2">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button id="regenerate-text" class="text-gray-600 hover:text-gray-800 transition p-2">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <button id="save-text" class="text-gray-600 hover:text-gray-800 transition p-2">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="generated-text" class="bg-gray-50 p-4 rounded-lg text-gray-700 whitespace-pre-line"></div>
+                        </div>
+                        
+                        <div id="copy-notification" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                            <p class="text-sm">Text copied to clipboard!</p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // DOM elements
+        const toolModal = document.getElementById('tool-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const closeModal = document.getElementById('close-modal');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const toolsGrid = document.getElementById('tools-grid');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const searchInput = document.getElementById('search-input');
+        const searchSuggestions = document.getElementById('search-suggestions');
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userMenu = document.getElementById('user-menu');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
+
+        // State
+        let currentCategory = 'all';
+        let displayedTools = 16;
+        let isDarkMode = false;
+        let userLoggedIn = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            renderPopularTools();
+            renderRecommendedTools();
+            
+            // Category tab functionality
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    categoryTabs.forEach(t => {
+                        t.classList.remove('active', 'text-indigo-600');
+                        t.classList.add('text-gray-600');
+                    });
+                    tab.classList.add('active', 'text-indigo-600');
+                    tab.classList.remove('text-gray-600');
+                    
+                    currentCategory = tab.getAttribute('data-category');
+                    displayedTools = 16;
+                    renderTools();
+                });
+            });
+
+            // Load more functionality
+            loadMoreBtn.addEventListener('click', () => {
+                displayedTools += 8;
+                renderTools();
+            });
+
+            // Dark mode toggle
+            darkModeToggle.addEventListener('click', () => {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark');
+                darkModeToggle.innerHTML = isDarkMode ? 
+                    '<i class="fas fa-sun text-xl"></i>' : 
+                    '<i class="fas fa-moon text-xl"></i>';
+            });
+
+            // Search functionality
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim() !== '') {
+                    searchSuggestions.classList.add('active');
+                }
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                if (e.target.value.trim() !== '') {
+                    searchSuggestions.classList.add('active');
+                } else {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.classList.remove('active');
+                }
+            });
+
+            // User menu toggle
+            userMenuBtn.addEventListener('click', () => {
+                userMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userMenuBtn.contains(e.target) && !userMenu.contains(e.target)) {
+                    userMenu.classList.remove('active');
+                }
+            });
+
+            // Close modal
+            closeModal.addEventListener('click', () => {
+                toolModal.classList.add('hidden');
+            });
+
+            // Close modal when clicking outside
+            toolModal.addEventListener('click', (e) => {
+                if (e.target === toolModal) {
+                    toolModal.classList.add('hidden');
+                }
+            });
+        });
+
+        // Render tools
+        function renderTools() {
+            const filteredTools = currentCategory === 'all' 
+                ? toolsData 
+                : toolsData.filter(tool => tool.category === currentCategory);
+            
+            const toolsToShow = filteredTools.slice(0, displayedTools);
+            
+            toolsGrid.innerHTML = toolsToShow.map(tool => `
+                <div class="tool-card bg-white rounded-xl shadow-md overflow-hidden fade-in" data-category="${tool.category}">
+                    ${tool.popular ? '<div class="tool-badge">Popular</div>' : ''}
+                    <div class="p-5">
+                        <div class="bg-${tool.color}-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas ${tool.icon} text-${tool.color}-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">${tool.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${tool.description}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="star-rating text-sm">
+                                    ${renderStars(tool.rating)}
+                                </div>
+                                <span class="text-xs text-gray-500 ml-1">${tool.rating}</span>
+                            </div>
+                            <button class="tool-btn text-indigo-600 hover:text-indigo-800 font-medium flex items-center" data-tool="${tool.id}">
+                                Use Tool <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners to tool buttons
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const toolId = parseInt(btn.getAttribute('data-tool'));
+                    const tool = toolsData.find(t => t.id === toolId);
+                    openToolModal(tool);
+                });
+            });
+            
+            // Show/hide load more button
+            if (toolsToShow.length >= filteredTools.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+        // Render popular tools
+        function renderPopularTools() {
+            const popularTools = toolsData.filter(tool => tool.popular);
+            const popularToolsContainer = document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.gap-6');
+            
+            popularToolsContainer.innerHTML = popularTools.map(tool => `
+                <div class="tool-card bg-white rounded-xl shadow-md overflow-hidden fade-in">
+                    ${tool.popular ? '<div class="tool-badge">Popular</div>' : ''}
+                    <div class="p-5">
+                        <div class="bg-${tool.color}-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas ${tool.icon} text-${tool.color}-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">${tool.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${tool.description}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="star-rating text-sm">
+                                    ${renderStars(tool.rating)}
+                                </div>
+                                <span class="text-xs text-gray-500 ml-1">${tool.rating}</span>
+                            </div>
+                            <button class="tool-btn text-indigo-600 hover:text-indigo-800 font-medium flex items-center" data-tool="${tool.id}">
+                                Use Tool <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners to tool buttons
+            popularToolsContainer.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const toolId = parseInt(btn.getAttribute('data-tool'));
+                    const tool = toolsData.find(t => t.id === toolId);
+                    openToolModal(tool);
+                });
+            });
+        }
+
+        // Render recommended tools
+        function renderRecommendedTools() {
+            const recommendedTools = toolsData.slice(0, 4);
+            const recommendedToolsContainer = document.getElementById('recommended-tools');
+            
+            recommendedToolsContainer.innerHTML = recommendedTools.map((tool, index) => `
+                <div class="tool-card bg-white rounded-xl shadow-md overflow-hidden tool-recommendation" style="animation-delay: ${index * 0.1}s">
+                    <div class="p-5">
+                        <div class="bg-${tool.color}-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas ${tool.icon} text-${tool.color}-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">${tool.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${tool.description}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="star-rating text-sm">
+                                    ${renderStars(tool.rating)}
+                                </div>
+                                <span class="text-xs text-gray-500 ml-1">${tool.rating}</span>
+                            </div>
+                            <button class="tool-btn text-indigo-600 hover:text-indigo-800 font-medium flex items-center" data-tool="${tool.id}">
+                                Use Tool <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners to tool buttons
+            recommendedToolsContainer.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const toolId = parseInt(btn.getAttribute('data-tool'));
+                    const tool = toolsData.find(t => t.id === toolId);
+                    openToolModal(tool);
+                });
+            });
+        }
+
+        // Render star rating
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star text-yellow-400"></i>';
+            }
+            
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star text-yellow-400"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Open tool modal
+        function openToolModal(tool) {
+            const toolName = tool.name.toLowerCase().replace(/\s+/g, '-');
+            let toolContent;
+            
+            if (toolContents[toolName]) {
+                toolContent = toolContents[toolName];
+            } else {
+                toolContent = {
+                    title: tool.name,
+                    content: `
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <p class="text-blue-800">This is a placeholder for the ${tool.name} tool. In a real implementation, this would contain the actual tool interface.</p>
+                            </div>
+                            
+                            <div class="upload-area p-8 rounded-lg text-center cursor-pointer" id="upload-area">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600 mb-2">Drag & drop your file here</p>
+                                <p class="text-sm text-gray-500">or click to browse</p>
+                                <p class="text-sm text-gray-500 mt-2">Maximum file size: 50MB</p>
+                                <input type="file" id="file-input" class="hidden">
+                            </div>
+                            
+                            <div id="file-info" class="hidden bg-blue-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-medium" id="file-name">filename.ext</p>
+                                        <p class="text-sm text-gray-500" id="file-size">0 MB</p>
+                                    </div>
+                                    <button id="remove-file" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button id="process-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition disabled:opacity-50" disabled>
+                                    Process
+                                </button>
+                            </div>
+                            
+                            <div id="progress-container" class="hidden">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-blue-800">Processing...</span>
+                                        <span class="text-sm font-medium text-blue-800" id="progress-percent">0%</span>
+                                    </div>
+                                    <div class="w-full bg-blue-200 rounded-full h-2.5">
+                                        <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="result-container" class="hidden bg-green-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-medium text-green-800">Process Complete!</p>
+                                        <p class="text-sm text-green-600">Your file is ready to download</p>
+                                    </div>
+                                    <button id="download-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                                        <i class="fas fa-download mr-2"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                };
+            }
+            
+            modalTitle.textContent = toolContent.title;
+            modalContent.innerHTML = toolContent.content;
+            toolModal.classList.remove('hidden');
+            
+            // Initialize tool-specific functionality
+            initializeToolFunctionality(toolName);
+            
+            // Share functionality
+            const shareTool = document.getElementById('share-tool');
+            if (shareTool) {
+                shareTool.addEventListener('click', () => {
+                    showNotification('Share link copied to clipboard!');
+                });
+            }
+            
+            // Favorite functionality
+            const favoriteTool = document.getElementById('favorite-tool');
+            if (favoriteTool) {
+                favoriteTool.addEventListener('click', () => {
+                    favoriteTool.innerHTML = favoriteTool.innerHTML.includes('far') ? 
+                        '<i class="fas fa-heart"></i>' : 
+                        '<i class="far fa-heart"></i>';
+                    
+                    showNotification(favoriteTool.innerHTML.includes('fas') ? 
+                        'Added to favorites!' : 
+                        'Removed from favorites!');
+                });
+            }
+            
+            // Report functionality
+            const reportTool = document.getElementById('report-tool');
+            if (reportTool) {
+                reportTool.addEventListener('click', () => {
+                    showNotification('Thank you for your report. We will review this tool.');
+                });
+            }
+            
+            // Star rating functionality
+            const stars = document.querySelectorAll('#tool-rating .star');
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    const rating = index + 1;
+                    stars.forEach((s, i) => {
+                        if (i < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    showNotification(`You rated this tool ${rating} stars!`);
+                });
+            });
+        }
+
+        // Initialize tool-specific functionality
+        function initializeToolFunctionality(toolName) {
+            // File upload functionality
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const removeFile = document.getElementById('remove-file');
+            const processBtn = document.getElementById('process-btn') || document.getElementById('convert-btn') || 
+                              document.getElementById('resize-btn') || document.getElementById('generate-btn') || 
+                              document.getElementById('generate-text-btn');
+            
+            if (uploadArea && fileInput) {
+                uploadArea.addEventListener('click', () => {
+                    fileInput.click();
+                });
+                
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    
+                    if (e.dataTransfer.files.length) {
+                        handleFileUpload(e.dataTransfer.files[0]);
+                    }
+                });
+                
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length) {
+                        handleFileUpload(e.target.files[0]);
+                    }
+                });
+                
+                removeFile.addEventListener('click', () => {
+                    fileInput.value = '';
+                    fileInfo.classList.add('hidden');
+                    if (processBtn) processBtn.disabled = true;
+                });
+            }
+            
+            // Handle file upload
+            function handleFileUpload(file) {
+                fileName.textContent = file.name;
+                fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+                fileInfo.classList.remove('hidden');
+                if (processBtn) processBtn.disabled = false;
+                
+                // Special handling for image resizer
+                if (toolName === 'image-resizer') {
+                    const imagePreview = document.getElementById('image-preview');
+                    const previewImg = document.getElementById('preview-img');
+                    
+                    if (imagePreview && previewImg) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            previewImg.src = e.target.result;
+                            imagePreview.classList.remove('hidden');
+                            
+                            // Get image dimensions
+                            previewImg.onload = () => {
+                                document.getElementById('width-input').value = previewImg.naturalWidth;
+                                document.getElementById('height-input').value = previewImg.naturalHeight;
+                            };
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+            
+            // Process button functionality
+            if (processBtn) {
+                processBtn.addEventListener('click', () => {
+                    const progressContainer = document.getElementById('progress-container');
+                    const progressBar = document.getElementById('progress-bar');
+                    const progressPercent = document.getElementById('progress-percent');
+                    const resultContainer = document.getElementById('result-container');
+                    
+                    if (progressContainer && progressBar && progressPercent) {
+                        progressContainer.classList.remove('hidden');
+                        processBtn.disabled = true;
+                        
+                        // Simulate progress
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            progress += 5;
+                            progressBar.style.width = `${progress}%`;
+                            progressPercent.textContent = `${progress}%`;
+                            
+                            if (progress >= 100) {
+                                clearInterval(interval);
+                                progressContainer.classList.add('hidden');
+                                if (resultContainer) resultContainer.classList.remove('hidden');
+                            }
+                        }, 200);
+                    }
+                });
+            }
+            
+            // Download button functionality
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    showNotification('Downloading file...');
+                });
+            }
+            
+            // Password generator functionality
+            if (toolName === 'password-generator') {
+                const lengthSlider = document.getElementById('length-slider');
+                const lengthValue = document.getElementById('length-value');
+                const generateBtn = document.getElementById('generate-btn');
+                const generatedPassword = document.getElementById('generated-password');
+                const copyPassword = document.getElementById('copy-password');
+                const refreshPassword = document.getElementById('refresh-password');
+                const strengthBar = document.getElementById('strength-bar');
+                const strengthText = document.getElementById('strength-text');
+                
+                if (lengthSlider && lengthValue) {
+                    lengthSlider.addEventListener('input', () => {
+                        lengthValue.textContent = lengthSlider.value;
+                        updatePasswordStrength();
+                    });
+                }
+                
+                if (generateBtn) {
+                    generateBtn.addEventListener('click', generatePassword);
+                }
+                
+                if (refreshPassword) {
+                    refreshPassword.addEventListener('click', generatePassword);
+                }
+                
+                if (copyPassword) {
+                    copyPassword.addEventListener('click', () => {
+                        if (generatedPassword) {
+                            navigator.clipboard.writeText(generatedPassword.value);
+                            showNotification('Password copied to clipboard!');
+                        }
+                    });
+                }
+                
+                // Generate initial password
+                generatePassword();
+                
+                function generatePassword() {
+                    const length = parseInt(lengthSlider.value);
+                    const uppercase = document.getElementById('uppercase').checked;
+                    const lowercase = document.getElementById('lowercase').checked;
+                    const numbers = document.getElementById('numbers').checked;
+                    const symbols = document.getElementById('symbols').checked;
+                    const excludeAmbiguous = document.getElementById('exclude-ambiguous').checked;
+                    const excludeBrackets = document.getElementById('exclude-brackets').checked;
+                    
+                    let charset = '';
+                    if (uppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    if (lowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+                    if (numbers) charset += '0123456789';
+                    if (symbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                    
+                    if (excludeAmbiguous) {
+                        charset = charset.replace(/[il1Lo0O]/g, '');
+                    }
+                    
+                    if (excludeBrackets) {
+                        charset = charset.replace(/[\[\]{}()]/g, '');
+                    }
+                    
+                    if (charset === '') {
+                        showNotification('Please select at least one character type.');
+                        return;
+                    }
+                    
+                    let password = '';
+                    for (let i = 0; i < length; i++) {
+                        password += charset.charAt(Math.floor(Math.random() * charset.length));
+                    }
+                    
+                    generatedPassword.value = password;
+                    updatePasswordStrength();
+                }
+                
+                function updatePasswordStrength() {
+                    const password = generatedPassword.value;
+                    let strength = 0;
+                    
+                    // Length contributes to strength
+                    strength += Math.min(password.length / 4, 25);
+                    
+                    // Character types contribute to strength
+                    if (/[a-z]/.test(password)) strength += 15;
+                    if (/[A-Z]/.test(password)) strength += 15;
+                    if (/[0-9]/.test(password)) strength += 15;
+                    if (/[^a-zA-Z0-9]/.test(password)) strength += 30;
+                    
+                    // Cap at 100
+                    strength = Math.min(strength, 100);
+                    
+                    // Update UI
+                    strengthBar.style.width = `${strength}%`;
+                    
+                    if (strength < 40) {
+                        strengthBar.className = 'bg-red-500 h-2.5 rounded-full';
+                        strengthText.textContent = 'Weak';
+                        strengthText.className = 'text-sm font-medium text-red-600';
+                    } else if (strength < 70) {
+                        strengthBar.className = 'bg-yellow-500 h-2.5 rounded-full';
+                        strengthText.textContent = 'Medium';
+                        strengthText.className = 'text-sm font-medium text-yellow-600';
+                    } else {
+                        strengthBar.className = 'bg-green-500 h-2.5 rounded-full';
+                        strengthText.textContent = 'Strong';
+                        strengthText.className = 'text-sm font-medium text-green-600';
+                    }
+                }
+            }
+            
+            // Text generator functionality
+            if (toolName === 'text-generator') {
+                const generateTextBtn = document.getElementById('generate-text-btn');
+                const generatingContainer = document.getElementById('generating-container');
+                const resultContainer = document.getElementById('result-container');
+                const generatedText = document.getElementById('generated-text');
+                const copyText = document.getElementById('copy-text');
+                const regenerateText = document.getElementById('regenerate-text');
+                const saveText = document.getElementById('save-text');
+                
+                if (generateTextBtn) {
+                    generateTextBtn.addEventListener('click', () => {
+                        const prompt = document.getElementById('text-prompt').value.trim();
+                        
+                        if (!prompt) {
+                            showNotification('Please enter a text prompt.');
+                            return;
+                        }
+                        
+                        // Show generating container
+                        generatingContainer.classList.remove('hidden');
+                        resultContainer.classList.add('hidden');
+                        
+                        // Simulate AI generation delay
+                        setTimeout(() => {
+                            generatingContainer.classList.add('hidden');
+                            
+                            // Sample generated text (in a real implementation, this would come from an AI API)
+                            const sampleTexts = {
+                                article: `Introduction:\n${prompt}\n\nIn recent years, the topic has gained significant attention among experts and enthusiasts alike. This article explores the various aspects and implications of this subject matter.\n\nMain Body:\nThere are several key factors to consider when examining this topic. First, the historical context provides valuable insights into its evolution over time. Second, the current state of affairs reveals both challenges and opportunities for further development.\n\nConclusion:\nAs we look to the future, it's clear that this topic will continue to play a crucial role in shaping our understanding of the world. By staying informed and engaged, we can better navigate the complexities and possibilities that lie ahead.`,
+                                blog: `Hey everyone!\n\nToday I wanted to talk about ${prompt}. It's something that's been on my mind a lot lately, and I think it's worth sharing my thoughts with you all.\n\nWhen I first encountered this concept, I was skeptical. But the more I learned about it, the more I realized how impactful it can be. The key is to approach it with an open mind and a willingness to learn.\n\nWhat are your thoughts on this? Have you had any experiences with ${prompt}? I'd love to hear your perspectives in the comments below!\n\nThanks for reading, and stay tuned for more content coming soon!`,
+                                email: `Subject: Regarding ${prompt}\n\nDear [Recipient],\n\nI hope this email finds you well. I'm writing to discuss ${prompt} and its potential implications for our upcoming project.\n\nAfter careful consideration, I believe that incorporating these ideas could significantly enhance our outcomes. The main benefits include improved efficiency, better resource allocation, and a more streamlined workflow.\n\nI've attached a detailed document outlining my proposals and would appreciate your feedback at your earliest convenience. Please let me know if you'd like to schedule a meeting to discuss this further.\n\nLooking forward to your thoughts.\n\nBest regards,\n[Your Name]`,
+                                social: `Just discovered something amazing about ${prompt}! 🤯\n\nIt's incredible how much of a difference this can make in our daily lives. I've been trying it out for the past week and the results are speaking for themselves.\n\nWho else has experience with this? Would love to hear your stories! 👇\n\n#${prompt.replace(/\s+/g, '')} #LifeHacks #GameChanger`,
+                                story: `The sun rose over the horizon, casting long shadows across the landscape. In the distance, ${prompt} could be seen, a beacon of hope in an otherwise uncertain world.\n\nMaya had been searching for what felt like an eternity. The journey had been fraught with challenges, but she never lost sight of her goal. Now, standing before it, she felt a mix of excitement and trepidation.\n\nAs she approached, the details became clearer. It was even more magnificent than she had imagined. The stories hadn't done it justice.\n\nTaking a deep breath, Maya stepped forward, ready to embrace whatever came next.`,
+                                poem: `In whispers soft and dreams untold,\n${prompt} shines in hues of gold.\nA beacon bright in darkest night,\nGuiding souls with gentle light.\n\nThrough valleys deep and mountains high,\nIt catches every watchful eye.\nA constant in this world of change,\nA pattern beautiful and strange.\n\nSo let us pause and take heed,\nOf wondrous wonders sown by seed.\nFor in its presence, we are free,\nTo be the best that we can be.`
+                            };
+                            
+                            const contentType = document.getElementById('content-type').value;
+                            generatedText.textContent = sampleTexts[contentType] || sampleTexts.article;
+                            resultContainer.classList.remove('hidden');
+                        }, 2000);
+                    });
+                }
+                
+                if (copyText) {
+                    copyText.addEventListener('click', () => {
+                        if (generatedText) {
+                            navigator.clipboard.writeText(generatedText.textContent);
+                            showNotification('Text copied to clipboard!');
+                        }
+                    });
+                }
+                
+                if (regenerateText) {
+                    regenerateText.addEventListener('click', () => {
+                        if (generateTextBtn) {
+                            generateTextBtn.click();
+                        }
+                    });
+                }
+                
+                if (saveText) {
+                    saveText.addEventListener('click', () => {
+                        showNotification('Text saved to your account!');
+                    });
+                }
+            }
+            
+            // Image resizer specific functionality
+            if (toolName === 'image-resizer') {
+                const widthInput = document.getElementById('width-input');
+                const heightInput = document.getElementById('height-input');
+                const maintainRatio = document.getElementById('maintain-ratio');
+                const previewImg = document.getElementById('preview-img');
+                
+                if (widthInput && heightInput && maintainRatio && previewImg) {
+                    let originalRatio = 1;
+                    
+                    previewImg.onload = () => {
+                        originalRatio = previewImg.naturalWidth / previewImg.naturalHeight;
+                    };
+                    
+                    widthInput.addEventListener('input', () => {
+                        if (maintainRatio.checked) {
+                            heightInput.value = Math.round(widthInput.value / originalRatio);
+                        }
+                    });
+                    
+                    heightInput.addEventListener('input', () => {
+                        if (maintainRatio.checked) {
+                            widthInput.value = Math.round(heightInput.value * originalRatio);
+                        }
+                    });
+                    
+                    maintainRatio.addEventListener('change', () => {
+                        if (maintainRatio.checked) {
+                            heightInput.value = Math.round(widthInput.value / originalRatio);
+                        }
+                    });
+                }
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
